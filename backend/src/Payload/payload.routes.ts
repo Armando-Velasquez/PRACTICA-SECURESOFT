@@ -35,7 +35,7 @@ router.get('/', (req: Request, res: Response) => {
 
 
 /**
- * Ejemplo de ruta con query params
+ * Ejemplo de ruta con query
  */
 router.get('/getPayload', (req: Request, res: Response) => {
     const { name, age } = req.query;
@@ -53,7 +53,7 @@ router.get('/getPayload', (req: Request, res: Response) => {
 
 
 /**
- * 
+ * Ejemplo de ruta con params
  */
 router.get('/getPayload/:id', (req: Request, res: Response) => {
     const { id } = req.params;
@@ -68,6 +68,25 @@ router.get('/getPayload/:id', (req: Request, res: Response) => {
         message: `El id que has enviado es ${id}`
     })
 })
+
+
+/**
+ * Ejemplo de ruta con body
+ */
+router.post('/createPayload', (req: Request, res: Response) => {
+    const { name, age } = req.body;
+
+    if (!name || !age) {
+        return res.status(400).json({
+            message: 'Faltan parámetros "name" o "age" en el body'
+        })
+    }
+
+    return res.status(200).json({
+        message: `Payload creado con nombre ${name} y edad ${age}`
+    })
+})
+
 
 
 export default router;
