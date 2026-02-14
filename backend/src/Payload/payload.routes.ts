@@ -88,5 +88,57 @@ router.post('/createPayload', (req: Request, res: Response) => {
 })
 
 
+import jwt from 'jsonwebtoken';
+
+const SECRET_KEY = (process.env.SECRET_KEY as string);
+
+router.post('/login', (req: Request, res: Response) => {
+    const { username, password } = req.body;
+
+    if (username === 'admin' && password === 'password') {
+        
+        const token = jwt.sign({ username, role: 1 }, SECRET_KEY, { expiresIn: '1h' });
+        const refreshToken = jwt.sign({ username, role: 1 }, SECRET_KEY, { expiresIn: '2h' });
+
+        return res.status(200).json({ token, refreshToken });
+    } else {
+        return res.status(401).json({ message: 'Credenciales inválidas' });
+    }
+})
+
+router.get('/protected', (req: Request, res: Response) => {
+    const authHeader = req.headers['authorization']?.split(' ')[1]; // Bearer <token>
+
+    if (!authHeader) {
+        return res.status(401).json({ message: 'Token no proporcionado' });
+    }
+
+    jwt.verify(authHeader, SECRET_KEY, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: 'Token inválido' });
+        }
+
+        return res.status(200).json({ message: `Acceso concedido a ${decoded}` });
+    })
+
+})
+
+
+
+import multer from 'multer';
+
+const upload = multer({ storage: multer.memoryStorage() });
+
+router.post('/upload', upload.single('file'), (req: Request, res: Response) => {
+
+    if (!req.file?.buffer) {
+        return res.status(400).json({ message: 'Archivo no proporcionado' });
+    }
+
+    return res.status(200).json({ 
+        message: `Archivo ${req.file.originalname} recibido con éxito`,
+        file: req.file,
+    });
+})
 
 export default router;
