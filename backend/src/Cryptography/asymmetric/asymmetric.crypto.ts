@@ -1,5 +1,6 @@
 import moduleAlias from 'module-alias';
 import crypto from 'crypto';
+import { get } from 'http';
 
 const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
     modulusLength: 2048,
@@ -7,14 +8,15 @@ const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
     privateKeyEncoding: { type: 'pkcs8', format: 'pem' }
 });
 
-export function getPublicKey(): string {
+export function getPublicKey() {
+    // console.log('Public Key:', publicKey);
     return publicKey;
 }
 
 export function getPrivateKey(): string {
+    // console.log('Private Key:', privateKey);
     return privateKey;
 }
-
 
 export function signText(text: string): string {
     const signer = crypto.sign('sha256', Buffer.from(text, 'utf-8'), {
