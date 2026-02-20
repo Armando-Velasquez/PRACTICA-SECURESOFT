@@ -1,6 +1,10 @@
 import moduleAlias from 'module-alias';
 import crypto from 'crypto';
 
+// ==========================================================
+// INSTRUCCIONES PARA EL LABORATORIO SE ENCUENTRAR EN UN TXT EN LA RAIZ DEL PROYECTO
+// ==========================================================
+
 export const ALGORITHM = 'aes-256-gcm';
 
 const KEY = crypto.randomBytes(32);
@@ -48,14 +52,14 @@ export function decrypt(payload: EncryptedPayload): string {
 
     // Objeto decifrador
     const decipher = crypto.createDecipheriv(
-        ALGORITHM, 
-        KEY, 
+        ALGORITHM,
+        KEY,
         Buffer.from(payload.iv, 'hex')
     );
 
     // Verificar el tag de autenticación
     decipher.setAuthTag(Buffer.from(payload.authTag, 'hex'));
-    
+
     // Desencriptar el texto
     const decrypted = Buffer.concat([
         decipher.update(Buffer.from(payload.encrypted, 'hex')),

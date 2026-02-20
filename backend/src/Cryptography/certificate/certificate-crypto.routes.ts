@@ -8,6 +8,8 @@ router.get('/', (req: Request, res: Response) => {
 })
 
 
+
+// Genera un certificado X.509 auto-firmado y devuelve el certificado, la clave privada y la clave pública en formato PEM
 router.get('/generate', (req: Request, res: Response) => {
     const certificate = generateCertificate();
 
@@ -15,6 +17,8 @@ router.get('/generate', (req: Request, res: Response) => {
 })
 
 
+
+// Firma un mensaje utilizando la clave privada y el certificado, devuelve el mensaje firmado con la firma en formato PEM
 router.post('/sign', (req: Request, res: Response) => {
     const { message, privateKeyPem, certificatePem } = req.body;
 
@@ -29,6 +33,7 @@ router.post('/sign', (req: Request, res: Response) => {
 
 
 
+// Verifica la firma de un mensaje utilizando el certificado, devuelve si la firma es válida o no
 router.post('/verify', (req: Request, res: Response) => {
     const { message, signature, certificatePem } = req.body;
 

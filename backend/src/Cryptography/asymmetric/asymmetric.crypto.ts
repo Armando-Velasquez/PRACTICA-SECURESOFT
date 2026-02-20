@@ -1,6 +1,10 @@
 import moduleAlias from 'module-alias';
 import crypto from 'crypto';
-import { get } from 'http';
+
+// ==========================================================
+// INSTRUCCIONES PARA EL LABORATORIO SE ENCUENTRAR EN UN TXT EN LA RAIZ DEL PROYECTO
+// ==========================================================
+
 
 const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
     modulusLength: 2048,
@@ -8,16 +12,35 @@ const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
     privateKeyEncoding: { type: 'pkcs8', format: 'pem' }
 });
 
+
+
+/**
+ * Devuelve la clave pública en formato PEM
+ * @returns 
+ */
 export function getPublicKey() {
     // console.log('Public Key:', publicKey);
     return publicKey;
 }
 
+
+
+/**
+ * Devuelve la clave privada en formato PEM
+ * @returns 
+ */
 export function getPrivateKey(): string {
     // console.log('Private Key:', privateKey);
     return privateKey;
 }
 
+
+
+/**
+ * Firma un texto utilizando la clave privada y devuelve la firma en base64
+ * @param text 
+ * @returns 
+ */
 export function signText(text: string): string {
     const signer = crypto.sign('sha256', Buffer.from(text, 'utf-8'), {
         key: privateKey,
@@ -29,6 +52,12 @@ export function signText(text: string): string {
 
 
 
+/**
+ * Verifica una firma utilizando la clave pública, devuelve true si la firma es válida, false en caso contrario
+ * @param text 
+ * @param signature 
+ * @returns 
+ */
 export function verifySignature(text: string, signature: string): boolean {
     const ok = crypto.verify('sha256', Buffer.from(text, 'utf-8'), {
         key: publicKey,

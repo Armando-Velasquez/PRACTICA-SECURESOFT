@@ -1,6 +1,10 @@
 import moduleAlias from "module-alias";
 import crypto from "crypto";
 
+// ==========================================================
+// INSTRUCCIONES PARA EL LABORATORIO SE ENCUENTRAR EN UN TXT EN LA RAIZ DEL PROYECTO
+// ==========================================================
+
 /**
  * Genera un par de claves RSA (clave privada y clave pública).
  * @returns 

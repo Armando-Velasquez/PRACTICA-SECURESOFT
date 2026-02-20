@@ -8,6 +8,8 @@ router.get('/', (req: Request, res: Response) => {
 })
 
 
+
+// Endpoint para encriptar un texto utilizando la clave secreta
 router.post('/encrypt', (req: Request, res: Response) => {
     const { text } = req.body;
 
@@ -25,6 +27,8 @@ router.post('/encrypt', (req: Request, res: Response) => {
 })
 
 
+
+// Endpoint para desencriptar un texto utilizando la clave secreta
 router.post('/decrypt', (req: Request, res: Response) => {
     const { encrypted, iv, authTag } = req.body;
 
@@ -36,10 +40,10 @@ router.post('/decrypt', (req: Request, res: Response) => {
         const payload: EncryptedPayload = { encrypted, iv, authTag }
         const text = decrypt(payload);
 
-        return res.json({ 
+        return res.json({
             algorithm: ALGORITHM,
             decifrado: text
-         });
+        });
     } catch (error) {
         return res.status(400).json({ error: 'Error al desencriptar el texto. Verifica los datos proporcionados.' });
     }

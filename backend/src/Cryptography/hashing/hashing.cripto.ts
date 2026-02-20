@@ -1,6 +1,10 @@
 import moduleAlias from "module-alias";
 import crypto from 'crypto';
 
+// ==========================================================
+// INSTRUCCIONES PARA EL LABORATORIO SE ENCUENTRAR EN UN TXT EN LA RAIZ DEL PROYECTO
+// ==========================================================
+
 /**
  * Genera una sal aleatoria de la longitud especificada.
  * @param length 
@@ -9,6 +13,7 @@ import crypto from 'crypto';
 export function generateSalt(length: number): string {
     return crypto.randomBytes(length).toString('hex');
 }
+
 
 
 /**

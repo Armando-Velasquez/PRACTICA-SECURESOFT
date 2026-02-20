@@ -7,9 +7,9 @@ router.get('/', (req: Request, res: Response) => {
     res.send('RUTA PRINCIPAL DE HASHING CRYPTO');
 })
 
-/**
- * Generar un hash a partir de una contraseña proporcionada en el cuerpo de la solicitud.
- */
+
+
+// Generar un hash a partir de una contraseña proporcionada en el cuerpo de la solicitud.
 router.post('/hash', (req: Request, res: Response) => {
     const { password } = req.body;
 
@@ -18,7 +18,7 @@ router.post('/hash', (req: Request, res: Response) => {
     }
 
     // Genera una sal aleatoria de 16 bytes (32 caracteres hexadecimales)
-    const salt = generateSalt(16); 
+    const salt = generateSalt(16);
 
     // Crea un hash utilizando la contraseña y la sal generada
     const hash = createHashSalt(password, salt);
@@ -28,9 +28,8 @@ router.post('/hash', (req: Request, res: Response) => {
 })
 
 
-/**
- * Verificar si una contraseña proporcionada coincide con un hash y una sal específicos.
- */
+
+// Verificar si una contraseña proporcionada coincide con un hash y una sal específicos.
 router.post('/verify', (req: Request, res: Response) => {
     const { password, salt, hash } = req.body;
 

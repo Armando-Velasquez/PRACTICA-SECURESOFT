@@ -8,21 +8,27 @@ router.get('/', (req: Request, res: Response) => {
 })
 
 
+
+// Endpoint para obtener la clave pública
 router.get('/public-key', (req: Request, res: Response) => {
-    return res.status(200).json({ 
-        publicKey: getPublicKey() 
+    return res.status(200).json({
+        publicKey: getPublicKey()
     });
 })
 
+
+
+// Endpoint para obtener la clave privada 
 // Solo para pruebas, no se recomienda exponer la clave privada en un endpoint
 router.get('/private-key', (req: Request, res: Response) => {
-    return res.status(200).json({ 
-        privateKey: getPrivateKey() 
+    return res.status(200).json({
+        privateKey: getPrivateKey()
     });
 })
 
 
 
+// Endpoint para firmar un texto utilizando la clave privada
 router.post('/sign', (req: Request, res: Response) => {
     const { text } = req.body;
 
@@ -32,14 +38,16 @@ router.post('/sign', (req: Request, res: Response) => {
 
     const signature = signText(text);
 
-    return res.status(200).json({ 
+    return res.status(200).json({
         algorithm: 'rsa-pss-sha256',
         text,
-        signature 
+        signature
     });
 })
 
 
+
+// Endpoint para verificar una firma utilizando la clave pública
 router.post('/verify', (req: Request, res: Response) => {
     const { text, signature } = req.body;
 
@@ -49,9 +57,9 @@ router.post('/verify', (req: Request, res: Response) => {
 
     const valid = verifySignature(text, signature);
 
-    return res.status(200).json({ 
+    return res.status(200).json({
         algorithm: 'rsa-pss-sha256',
-        valid 
+        valid
     });
 })
 

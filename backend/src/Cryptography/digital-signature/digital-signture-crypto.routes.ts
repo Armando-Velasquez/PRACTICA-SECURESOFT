@@ -7,6 +7,8 @@ router.get('/', (req: Request, res: Response) => {
     res.send('RUTA PRINCIPAL DE DIGITAL SIGNATURE CRYPTO');
 })
 
+
+// Generar un par de claves (pública y privada) para pruebas
 router.get('/keys', (req: Request, res: Response) => {
     const { publicKey, privateKey } = generateKey();
 
@@ -17,6 +19,8 @@ router.get('/keys', (req: Request, res: Response) => {
 })
 
 
+
+// Firmar un mensaje utilizando la clave privada y obtener la firma resultante
 router.post('/sign', (req: Request, res: Response) => {
     const { message, privateKey } = req.body;
 
@@ -34,6 +38,9 @@ router.post('/sign', (req: Request, res: Response) => {
     });
 })
 
+
+
+// Verificar la firma de un mensaje utilizando la clave pública
 router.post('/verify', (req: Request, res: Response) => {
     const { message, signature, publicKey } = req.body;
 
