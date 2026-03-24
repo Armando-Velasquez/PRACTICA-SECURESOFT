@@ -1,4 +1,3 @@
-
 // =============================================
 // EXPRESIONES REGULARES
 // =============================================
@@ -11,7 +10,6 @@
 // ? -> Hace que el elemento anterior sea opcional
 // + -> Uno o más caracteres
 // * -> Cero o más caracteres
-// ? -> Cero o un carácter
 // {n} -> Exactamente n caracteres
 // {n,} -> Al menos n caracteres
 // {n,m} -> Entre n y m caracteres
