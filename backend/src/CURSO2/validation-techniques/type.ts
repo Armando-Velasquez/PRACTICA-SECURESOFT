@@ -1,4 +1,3 @@
-
 // numerico
 function isNumeric(value: number) {
     if (!isNaN(value)) return;

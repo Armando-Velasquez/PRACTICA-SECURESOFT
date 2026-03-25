@@ -1,5 +1,5 @@
 import { Response, Request, Router } from 'express';
-import { generateSalt, createHashSalt } from '@/src/Cryptography/hashing/hashing.cripto'
+import { generateSalt, createHashSalt } from '@/src/CURSO1/Cryptography/hashing/hashing.cripto'
 
 const router = Router();
 

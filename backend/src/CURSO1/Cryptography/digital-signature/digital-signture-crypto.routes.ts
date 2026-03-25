@@ -1,5 +1,5 @@
 import { Response, Request, Router } from 'express';
-import { generateKey, signMessage, verifySignature } from '@/src/Cryptography/digital-signature/digital-signture.crypto'
+import { generateKey, signMessage, verifySignature } from '@/src/CURSO1/Cryptography/digital-signature/digital-signture.crypto'
 
 const router = Router();
 

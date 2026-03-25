@@ -1,5 +1,5 @@
 import { Response, Request, Router } from 'express';
-import { getPublicKey, getPrivateKey, signText, verifySignature } from '@/src/Cryptography/asymmetric/asymmetric.crypto';
+import { getPublicKey, getPrivateKey, signText, verifySignature } from '@/src/CURSO1/Cryptography/asymmetric/asymmetric.crypto';
 
 const router = Router();
 

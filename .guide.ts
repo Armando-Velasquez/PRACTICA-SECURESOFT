@@ -41,3 +41,11 @@
 // [a-z] -> Cualquier letra minúscula
 // [A-Z] -> Cualquier letra mayúscula
 // [0-9] -> Cualquier dígito
+
+
+
+// --------------------------------------------
+
+// VALIDA TODO EL TEXTO -> ^ ... $
+// VALIDA PALABRAS COMPLETAS -> \b
+// VALIDA TODAS LAS COINCIDENCIAS -> g

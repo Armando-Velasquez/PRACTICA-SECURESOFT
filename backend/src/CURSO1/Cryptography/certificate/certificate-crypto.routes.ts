@@ -1,5 +1,5 @@
 import { Response, Request, Router } from 'express';
-import { Certificate, SignedMessage, generateCertificate, signMessage, verifySignature } from '@/src/Cryptography/certificate/certificate.crypto'
+import { Certificate, SignedMessage, generateCertificate, signMessage, verifySignature } from '@/src/CURSO1/Cryptography/certificate/certificate.crypto'
 
 const router = Router();
 

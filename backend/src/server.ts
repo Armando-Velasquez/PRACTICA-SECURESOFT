@@ -5,6 +5,8 @@ import http from 'http';
 import https from 'https';
 import { loadRoutes } from '@/src/route';
 
+import { connectDB } from './database';
+
 const apiVersion = '/api/v1';
 
 export class Server {
@@ -19,8 +21,8 @@ export class Server {
 
         // Middleware
         this.app.use(express.json());
-        // this.app.use(express.json({ limit: '10mb' }));
-        // this.app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+        this.app.use(express.json({ limit: '50mb' }));
+        this.app.use(express.urlencoded({ extended: true, limit: '50mb' }));
     }
 
     listen() {
@@ -32,6 +34,9 @@ export class Server {
         //     allowedHeaders: ['Content-Type', 'Authorization']
         // }));
         this.app.use(cors());
+
+        // Conexion de base de datos
+        connectDB();
 
         // Archivo public
         this.app.use(express.static('public'));

@@ -192,6 +192,33 @@ const list_url = [
     "https://docs.google.com/presentation/d/1puzRwLW6I7Jwi85LokCZ7v08AZ3bJofd/edit?slide=id.p6#slide=id.p6"
 ]
 
-for (const url of list_url) {
-    console.log(urlRegex.test(url))
+// for (const url of list_url) {
+//     console.log(urlRegex.test(url))
+// }
+
+// Buscar entre el texto las palabras con al menos 3 caracteres
+const wordRegex = /\b\w{3,}\b/g;
+
+// Extraer horas y minutos de una cadena (HH:mm)
+const timeExtractRegex = /(\d{2}):(\d{2})/;
+
+// Eliminar espacios al inicio y al final de una cadena
+const trimRegex = /^\s+|\s+$/g;
+
+const list_words: any = [
+    "Hola, mundo esto es un ejemplo",
+    "Hi",
+    "A",
+    "abc",
+    "La hora de reunion es a las 09:30",
+    "La hora de salida es a las 12:30",
+    " Hola mundo ",
+    " Espacios al inicio y al final   "
+]
+
+for (const text of list_words) {
+    //    console.log(text.match(wordRegex), "-> " + text)
+    //    console.log(text.match(timeExtractRegex), "-> " + text)
+    //    console.log(text.match(trimRegex), "-> " + text)
+    //    console.log(text.replace(trimRegex, ''), "-> " + text)
 }

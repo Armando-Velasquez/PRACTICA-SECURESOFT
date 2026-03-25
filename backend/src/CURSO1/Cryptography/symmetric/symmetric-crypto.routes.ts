@@ -1,5 +1,5 @@
 import { Response, Request, Router } from 'express';
-import { encrypt, decrypt, ALGORITHM, EncryptedPayload } from '@/src/Cryptography/symmetric/symmetric.crypto';
+import { encrypt, decrypt, ALGORITHM, EncryptedPayload } from '@/src/CURSO1/Cryptography/symmetric/symmetric.crypto';
 
 const router = Router();
 
