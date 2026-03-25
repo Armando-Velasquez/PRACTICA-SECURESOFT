@@ -31,4 +31,28 @@ router.post("/login", (req: Request, res: Response) => {
     })
 })
 
+
+router.post("/register", (req: Request, res: Response) => {
+    const { username, password, email, role } = req.body;
+
+    // Crear consulta vulnerable
+    // const query = `INSERT INTO users (username, password, email, role) VALUES ('${username}', '${password}', '${email}', '${role}')`;
+
+    // Consulta segura utilizando parámetros
+    const query = `INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?)`;
+
+    console.log("Executing query:", query);
+
+    // dbConnection.query(query, (err, results) => {
+    dbConnection.query(query, [username, password, email, role], (err, results) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ message: "Internal server error" });
+        }
+
+        res.json({ message: "User registered successfully", userId: results.insertId });
+    });
+
+})
+
 export default router;
