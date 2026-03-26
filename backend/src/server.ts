@@ -6,6 +6,7 @@ import https from 'https';
 import { loadRoutes } from '@/src/route';
 
 import { connectDB } from './database';
+import { connection } from './database/connection';
 
 const apiVersion = '/api/v1';
 
@@ -37,6 +38,9 @@ export class Server {
 
         // Conexion de base de datos
         connectDB();
+
+        // Conexion a base de datos con Sequelize
+        connection();
 
         // Archivo public
         this.app.use(express.static('public'));
