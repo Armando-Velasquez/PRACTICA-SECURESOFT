@@ -1,7 +1,7 @@
-import { createHashSalt, generateSalt } from "@/src/CURSO1/Cryptography/hashing/hashing.cripto";
-import { models } from "@/src/database/connection";
+import { dbConnect, models } from "@/src/database/connection";
 import { Auth } from "@/src/database/interface/auth.interface";
 import { User } from "@/src/database/interface/user.interface";
+import { passwordHash } from "@/src/function/password-hash";
 import { Op } from "sequelize";
 
 
@@ -13,6 +13,13 @@ type FindAllParams = {
 
 export class UserService {
 
+    /**
+     * Obtener todos los usuarios con paginación y búsqueda
+     * @param page 
+     * @param limit 
+     * @param search 
+     * @returns 
+     */
     static async findAll(params: FindAllParams): Promise<any> {
         const { page, limit, search } = params;
 
@@ -51,35 +58,82 @@ export class UserService {
 
 
 
-    static async findOne(): Promise<any> {
+    /**
+     * Obtener un usuario por ID
+     * @param id_user 
+     */
+    static async findOne(id_user: number): Promise<any> {
 
-    }
+        const user = await models.User.findByPk(id_user, {
+            include: [{ model: models.Role, as: "role" }]
+        });
 
-
-
-    static async create(formData: User & Auth): Promise<any> {
-
-        // Crear el usuario
-        const user = await models.User.create(formData);
-
-        // Crear la autenticación
-        const salt = generateSalt(16);
-        const hash = createHashSalt(formData.password_auth, salt);
-
-        await models.Auth.create({
-            email_auth: formData.email_auth,
-            password_auth: hash,
-            salt_auth: salt,
-            id_user: user.id_user!
-        })
+        if (!user) {
+            return {
+                message: "Usuario no encontrado"
+            }
+        }
 
         return {
-            message: "Usuario creado exitosamente",
+            message: "Usuario obtenido exitosamente",
+            data: user
         }
+
     }
 
 
 
+    /**
+     * Crear un nuevo usuario
+     * @param formData 
+     * @returns 
+     */
+    static async create(formData: User & Auth): Promise<any> {
+        
+        // Transacción
+        const transaction = await dbConnect.transaction();
+
+        try {
+            // Crear el usuario
+            const user = await models.User.create(formData, { transaction });
+
+            // Crear la autenticación
+            // const salt = generateSalt(16);
+            // const hash = createHashSalt(formData.password_auth, salt);
+
+            const { salt, hash } = passwordHash({ password_auth: formData.password_auth });
+
+            await models.Auth.create({
+                email_auth: formData.email_auth,
+                password_auth: hash,
+                salt_auth: salt,
+                id_user: user.id_user!
+            }, { transaction })
+
+            // Commit
+            await transaction.commit();
+
+            return {
+                message: "Usuario creado exitosamente",
+            }
+
+        } catch (error) {
+            // rolback
+            await transaction.rollback();
+
+            throw error;
+        }
+
+    }
+
+
+
+    /**
+     * Actualizar un usuario por ID
+     * @param id_user 
+     * @param formData 
+     * @returns 
+     */
     static async update(id_user: number, formData: User & Auth): Promise<any> {
 
         // Buscar registro
@@ -93,8 +147,7 @@ export class UserService {
         // Actualizar autenticación
         const auth = await models.Auth.findOne({ where: { id_user } });
 
-        const salt = generateSalt(16);
-        const hash = createHashSalt(formData.password_auth, salt);
+        const { salt, hash } = passwordHash({ password_auth: formData.password_auth });
 
         if (auth) {
             await auth.update({
@@ -120,6 +173,12 @@ export class UserService {
 
 
 
+    /**
+     * Actualizar parcialmente un usuario por ID
+     * @param id_user 
+     * @param formData 
+     * @returns 
+     */
     static async patch(id_user: number, formData: User): Promise<any> {
 
         // Buscar registro
@@ -129,7 +188,7 @@ export class UserService {
 
         // Actualizar usuario
         await user.update(formData);
-   
+
         return {
             message: "Usuario actualizado exitosamente",
         }
@@ -138,11 +197,20 @@ export class UserService {
 
 
 
-    static async delete(): Promise<any> {
+    /**
+     * Eliminar un usuario por ID
+     * @param id_user 
+     */
+    static async delete(id_user: number): Promise<any> {
 
+        const user = await models.User.findByPk(id_user);
+
+        if (!user) return { message: "Usuario no encontrado" };
+
+        await user.destroy();
+
+        return {
+            message: "Usuario eliminado exitosamente",
+        }
     }
-
-
-
-
 }

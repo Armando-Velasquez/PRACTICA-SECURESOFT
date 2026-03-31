@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { RoleService } from "./role.service";
+import { errorCatch } from "@/src/function/error-catch";
 
 
 export class RoleController {
@@ -12,17 +13,12 @@ export class RoleController {
      */
     static async findAll(req: Request, res: Response): Promise<any> {
         try {
-
             const result = await RoleService.findAll();
 
             return res.status(200).json(result);
 
-        } catch (error) {
-            console.error("Error fetching roles:", error);
-            return res.status(500).json({
-                message: "Internal server error",
-                error: error instanceof Error ? error.message : error
-            });
+        } catch (error: any) {
+            errorCatch(res, error);
         }
     }
 
@@ -40,22 +36,14 @@ export class RoleController {
             // const { id } = req.params;
             const id_role = Number(req.params.id);
 
-            if (!id_role) {
-                return res.status(400).json({
-                    message: "Id invalido"
-                })
-            }
-
+            if (!id_role) return res.status(400).json({ message: "Id invalido" })
+            
             const result = await RoleService.findOne(id_role);
 
             return res.status(200).json(result);
 
         } catch (error) {
-            console.error("Error fetching role:", error);
-            return res.status(400).json({
-                message: "Internal server error",
-                error: error instanceof Error ? error.message : error
-            });
+            errorCatch(res, error);
         }
     }
 
@@ -75,11 +63,7 @@ export class RoleController {
             return res.status(200).json(result)
 
         } catch (error) {
-            console.error("Error fetching role:", error);
-            return res.status(400).json({
-                message: "Internal server error",
-                error: error instanceof Error ? error.message : error
-            });
+            errorCatch(res, error);
         }
     }
 
@@ -102,11 +86,7 @@ export class RoleController {
             return res.status(200).json(result);
 
         } catch (error) {
-            console.error("Error fetching role:", error);
-            return res.status(400).json({
-                message: "Internal server error",
-                error: error instanceof Error ? error.message : error
-            });
+            errorCatch(res, error);
         }
     }
 
@@ -127,11 +107,7 @@ export class RoleController {
             return res.status(200).json(result);
 
         } catch (error) {
-            console.error("Error fetching role:", error);
-            return res.status(400).json({
-                message: "Internal server error",
-                error: error instanceof Error ? error.message : error
-            });
+            errorCatch(res, error);
         }
     }
 

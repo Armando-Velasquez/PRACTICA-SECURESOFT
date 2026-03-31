@@ -1,5 +1,4 @@
-import { createHashSalt } from "@/src/CURSO1/Cryptography/hashing/hashing.cripto";
-import { models } from "@/src/database/connection";
+import { authService } from "@/src/function/authentication-controller";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 
@@ -20,7 +19,7 @@ let revokedTokens: any = [];
  * @param decodedUser 
  * @returns 
  */
-const authToken = async (decodedUser: DecodedUser) => {
+export const authToken = async (decodedUser: DecodedUser) => {
     return jwt.sign({
         id_user: decodedUser.id_user,
         firstname_user: decodedUser.firstname_user,
@@ -57,32 +56,19 @@ export class AuthService {
      * @returns 
      */
     static async authenticate({ email, password }: { email: string, password: string }): Promise<any> {
+        return await authService(email, password);
+    }
 
-        const auth = await models.Auth.findOne({
-            where: { email_auth: email }, include: [{ model: models.User, as: "user" }]
-        })
 
-        if (!auth) throw new Error("El correo o la contraseña son incorrectos");
 
-        // Verificacion de contraseña
-        const hashCompare = createHashSalt(password, auth.salt_auth)
-
-        if (hashCompare !== auth.password_auth) throw new Error("El correo o la contraseña son incorrectos");
-
-        // Generar token JWT
-        const decodedUser: DecodedUser = {
-            id_user: auth.id_user,
-            firstname_user: auth.user?.firstname_user.split(" ")[0],
-            lastname_user: auth.user?.lastname_user.split(" ")[0],
-            id_role: auth.user?.id_role,
-        }
-
-        const token = await authToken(decodedUser);
-
-        return {
-            token,
-            message: "Autenticación exitosa"
-        }
+    /**
+     * Autenticar usuario administrador y generar token JWT
+     * @param email
+     * @param password
+     * @returns 
+     */
+    static async admin({ email, password }: { email: string, password: string }): Promise<any> {
+        return await authService(email, password, true);
     }
 
 
@@ -114,7 +100,7 @@ export class AuthService {
         const token = authorization.split(" ")[1];
 
         // Verificar
-        if (! (await isTokenRevoked(token)) ) {
+        if (!(await isTokenRevoked(token))) {
             console.log("Revocando token:", token);
             await revokeToken(token);
         }
