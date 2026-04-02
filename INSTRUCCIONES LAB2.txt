@@ -1,0 +1,128 @@
+
+Desarrollar una API funcional aplicando:
+
+- Modelado relacional (1:1, 1:N, N:M)
+- Validaciones avanzadas (Zod + Regex + reglas de negocio)
+- Seguridad básica (hash + cifrado)
+- CRUDs reales con lógica de negocio
+- Buenas prácticas de backend
+
+==========================================================
+INSTRUCCIONES PARA EL LABORATORIO:
+==========================================================
+
+PARTE 1 — MODIFICACIÓN DE MODELO EXISTENTE
+
+    Extender entidad Product
+
+    Actualmente el modelo contiene:
+    - name_product
+    - price_product
+
+    Deben agregar los siguientes campos:
+
+    | Campo               | Tipo    | Reglas                       |
+    | ------------------- | ------- | ---------------------------- |
+    | description_product | string  | requerido, 10–500 caracteres |
+    | sku_product         | string  | único, formato controlado    |
+    | stock_product       | number  | entero ≥ 0                   |
+    | is_active           | boolean | default true                 |
+
+    Validaciones obligatorias
+    - No permitir nombres duplicados
+    - SKU debe ser único
+    - Precio > 0
+    - Stock ≥ 0
+
+
+
+PARTE 2 — NUEVO MODELO
+
+    Crear modelo: ProductDetail
+
+    Relación: 1:1 con Product
+
+    | Campo       | Tipo   | Reglas      |
+    | ----------- | ------ | ----------- |
+    | description | text   | requerido   |
+    | stock       | number | ≥ 0         |
+    | sku         | string | único       |
+    | id_product  | FK     | obligatorio |
+
+
+
+
+PARTE 3 — RELACIÓN EXISTENTE (ANÁLISIS)
+
+    Tabla user_product
+
+    - id_user
+    - id_product
+
+    Deben mejorarla agregando:
+
+    | Campo       | Tipo   |
+    | ----------- | ------ |
+    | quantity    | number |
+    | assigned_at | date   |
+
+
+    Casos de uso
+    - Asignar producto a usuario
+    - Consultar productos por usuario
+    - Validar disponibilidad antes de asignar
+
+
+PARTE 4 — CRUD DE PRODUCTS
+
+    CREATE
+
+        Debe validar:
+
+        - Zod
+        - Regex
+        - Lista negra
+        - Duplicados en DB
+        - Reglas de negocio
+
+
+    READ
+
+        Debe permitir:
+
+        - Filtros:
+        - precio
+        - stock
+        - Incluir relaciones:
+        - ProductDetail
+        - Users
+
+
+    UPDATE
+        - Validación parcial (PATCH)
+        - No permitir duplicados
+        - Validar formato de datos
+
+
+    DELETE
+        - Eliminar solo administrador
+
+
+
+PARTE 5 — VALIDACIONES
+
+    1. ZOD (obligatorio)
+    2. REGEX (obligatorio)
+    3. LISTAS: 
+        Lista blanca: Solo permitir ciertos campos en request
+        Lista negra:
+            Bloquear palabras como:
+                - hack
+                - ilegal
+                - gratis
+
+
+    4. VALIDACIONES DE NEGOCIO
+        - stock no puede ser negativo
+        - no asignar productos inactivos
+        - no asignar productos sin stock
