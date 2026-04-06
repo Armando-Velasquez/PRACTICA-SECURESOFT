@@ -1,0 +1,70 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import 'tailwindcss';
+
+html, body {
+    font-family: 'Arial', sans-serif;
+    width: 100%;
+    min-height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+app-root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.dark {
+    --tw-bg-opacity: 1;
+    color: var(--white);
+}
+
+@theme {
+  --color-background: #edf2f8;
+  --color-foreground: #181a1b;
+  --color-card: #e2e5e9;
+  --color-card-foreground: #192533;
+  --color-popover: #f1f2f3;
+  --color-popover-foreground: #0a111a;
+  --color-primary: #3c6089;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #b4bfca;
+  --color-secondary-foreground: #000000;
+  --color-muted: #d7d9da;
+  --color-muted-foreground: #50657c;
+  --color-accent: #cfd1d3;
+  --color-accent-foreground: #192533;
+  --color-destructive: #BF3F3F;
+  --color-destructive-foreground: #f1f2f3;
+  --color-border: #8398af;
+  --color-input: #8398af;
+  --color-ring: #3c6089;
+
+  --color-dark-background: #14171b;
+  --color-dark-foreground: #e3e5e8;
+  --color-dark-card: #0d141b;
+  --color-dark-card-foreground: #e3e5e8;
+  --color-dark-popover: #05070a;
+  --color-dark-popover-foreground: #e3e5e8;
+  --color-dark-primary: #32465d;
+  --color-dark-primary-foreground: #FFFFFF;
+  --color-dark-secondary: #263240;
+  --color-dark-secondary-foreground: #FFFFFF;
+  --color-dark-muted: #383f48;
+  --color-dark-muted-foreground: #9098a2;
+  --color-dark-accent: #383f48;
+  --color-dark-accent-foreground: #e3e5e8;
+  --color-dark-destructive: #BF3F3F;
+  --color-dark-destructive-foreground: #e3e5e8;
+  --color-dark-border: #5a718b;
+  --color-dark-input: #5a718b;
+  --color-dark-ring: #32465d;
+  --color-radius: 0.5rem;
+  --color-dark-radius: 0.5rem;
+}

@@ -1,0 +1,66 @@
+<!--
+===============================================
+Component and Function Library - tailjNg
+===============================================
+Description:
+  This library is designed to provide a set of reusable components and optimized functions
+  to facilitate the development of user interfaces and data management in web applications.
+  It includes tools to improve the developer experience and user interaction.
+
+Purpose:
+  - Create modular and customizable components.
+  - Improve front-end development efficiency through reusable tools.
+  - Provide scalable solutions that are easy to integrate with existing applications.
+
+Usage:
+  To access full functionality, simply import the necessary modules and use the
+  components according to your use case. Be sure to review the official documentation for detailed examples
+  on implementation and customization.
+
+Authors:
+  Armando Josue Velasquez Delgado - Lead Developer
+
+License:
+  This project is licensed under the BSD 3-Clause - see the LICENSE file for more details.
+
+Version: 0.0.54
+Creation Date: 2025-01-04
+===============================================
+-->
+
+<button
+  [attr.type]="type"
+  [jTooltip]="tooltip"
+  [jTooltipPosition]="tooltipPosition"
+  [disabled]="disabled || isLoading"
+  [ngClass]="computedClasses"
+  [class]="classes"
+  (click)="handleClick($event)"
+>
+  <div class="flex items-center justify-center gap-2">
+
+    @if (isLoading) {
+      <div [ngClass]="{ 'pt-1 pb-1': icon }">
+        <lucide-icon [name]="iconsService.icons.loading" [size]="iconSize || 15" class="animate-spin" />
+      </div>
+    }
+
+    @if (!isLoading && icon) {
+      <div class="pt-1 pb-1">
+
+        @if (!isChangeIcon) {
+          <lucide-icon [name]="icon" [size]="iconSize" />
+        } @else {
+          <lucide-icon [name]="iconChange" [size]="iconSize" />
+        }
+        
+      </div>
+    }
+
+    @if (text && (!isLoading || isLoadingText)) {
+      <span>{{ text }}</span>
+    }
+
+    <ng-content></ng-content>
+  </div>
+</button>
