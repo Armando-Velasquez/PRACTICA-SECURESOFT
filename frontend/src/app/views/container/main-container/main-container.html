@@ -1,1 +1,24 @@
-<p>main-container works!</p>
+<section class="h-screen flex flex-col">
+  <!-- Navbar -->
+  <app-navbar></app-navbar>
+
+  <!-- Contenedor Principal -->
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Sidebar -->
+    <app-sidebar></app-sidebar>
+
+    <!-- Contenedor -->
+    <main class="flex-1 p-4 overflow-auto">
+      <div class="flex flex-col gap-3">
+        <h1 class="font-bold">{{ title_component }}</h1>
+
+        <router-outlet />
+      </div>
+    </main>
+  </div>
+</section>
+
+<!-- Alerta Cierre de sesion -->
+
+<!-- Toast de Alertas -->
+<JAlertToast [position]="'top-right'" [monocromatic]="false"></JAlertToast>

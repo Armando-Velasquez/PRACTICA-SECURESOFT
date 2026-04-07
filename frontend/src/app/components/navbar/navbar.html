@@ -1,0 +1,43 @@
+<header
+  class="w-full h-14 bg-primary dark:bg-dark-primary text-white flex items-center px-4 shodow"
+>
+  <div class="flex items-center justify-between w-full">
+    <a
+      [routerLink]="[routerArray[0]]"
+      class="font-extrabold tracking-widest"
+      routerLinkActive="bg-primary dark:bg-dark-primary text-white hover:bg-primary/80! dark:hover:bg-dark-primary/80!"
+      >SECURESOFT</a
+    >
+
+    <div class="flex gap-2">
+      <div class="border border-border rounded-full">
+        <JModeToggle />
+      </div>
+
+      <a
+        [routerLink]="[routerArray[1]]"
+        class="flex pl-1 px-3 justify-center items-center border border-border rounded gap-3 hover:bg-dark-primary/80 hover:dark:bg-primary/80"
+        routerLinkActive="bg-primary dark:bg-dark-primary text-white hover:bg-primary/80! dark:hover:bg-dark-primary/80!"
+      >
+        <div class="flex justify-center items-center border border-border rounded-full w-8 h-8">
+          <lucide-icon [name]="User" [size]="15" />
+        </div>
+
+        <div class="flex flex-col justify-center items-start">
+          <span class="text-[12px] tracking-widest">Josue</span>
+          <span class="text-[12px] tracking-widest">Velasquez</span>
+        </div>
+      </a>
+
+      <div
+        (click)="logout()"
+        class="flex w-10 justify-center items-center border border-border rounded-full hover:bg-dark-primary/80 hover:dark:bg-primary/80 cursor-pointer"
+      >
+        <lucide-icon
+          [name]="loadingLogout ? Loader2 : LogOut"
+          [ngClass]="loadingLogout ? 'animate-spin' : ''"
+        />
+      </div>
+    </div>
+  </div>
+</header>

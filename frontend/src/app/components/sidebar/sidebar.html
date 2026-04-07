@@ -1,0 +1,77 @@
+<aside class="w-50 bg-input dark:bg-dark-input h-full p-2 overflow-y-auto">
+  <nav class="flex flex-col gap-2 text-black dark:text-white pt-3 text-[12px]">
+    <!-- Elementos -->
+    <a
+      [routerLink]="[routerArray[0]]"
+      class="border border-dark-border hover:bg-secondary dark:hover:bg-dark-secondary p-2 rounded flex items-center gap-2"
+      routerLinkActive="bg-primary dark:bg-dark-primary text-white hover:bg-primary/80! dark:hover:bg-dark-primary/80!"
+    >
+      <lucide-icon [name]="Home" [size]="18" />
+      <span>INICIO</span>
+    </a>
+
+    <span class="mt-[5px] text-[11px] uppercase font-bold opacity-55 pl-[5px]">Administrar</span>
+
+    <a
+      href="/usuarios"
+      class="border border-dark-border hover:bg-secondary dark:hover:bg-dark-secondary p-2 rounded flex items-center gap-2"
+      routerLinkActive="bg-primary dark:bg-dark-primary text-white hover:bg-primary/80! dark:hover:bg-dark-primary/80!"
+    >
+      <lucide-icon [name]="Users" [size]="18" />
+      <span>USUARIOS</span>
+    </a>
+
+    <a
+      href="/productos"
+      class="border border-dark-border hover:bg-secondary dark:hover:bg-dark-secondary p-2 rounded flex items-center gap-2"
+      routerLinkActive="bg-primary dark:bg-dark-primary text-white hover:bg-primary/80! dark:hover:bg-dark-primary/80!"
+    >
+      <lucide-icon [name]="LayoutPanelLeft" [size]="18" />
+      <span>PRODUCTOS</span>
+    </a>
+
+    <span class="mt-[5px] text-[11px] uppercase font-bold opacity-55 pl-[5px]">Enrutamiento</span>
+
+    <a
+      href="/inicio"
+      class="border border-dark-border hover:bg-secondary dark:hover:bg-dark-secondary p-2 rounded flex items-center gap-2"
+    >
+      <lucide-icon [name]="Home" [size]="18" />
+      <span>ENRUTAMIENTO NORMAL</span>
+    </a>
+
+    <div
+      (click)="navigateTo2('/inicio')"
+      class="border border-dark-border hover:bg-secondary dark:hover:bg-dark-secondary p-2 rounded flex items-center gap-2"
+    >
+      <lucide-icon [name]="Home" [size]="18" />
+      <span>ENRUTAMIENTO FUNCION NORMAL</span>
+    </div>
+
+    <div
+      (click)="navigateTo('/inicio')"
+      class="border border-dark-border hover:bg-secondary dark:hover:bg-dark-secondary p-2 rounded flex items-center gap-2"
+    >
+      <lucide-icon [name]="Home" [size]="18" />
+      <span>ENRUTAMIENTO FUNCION REACTIVA</span>
+    </div>
+
+    <a
+      [routerLink]="['/perfil']"
+      class="border border-dark-border hover:bg-secondary dark:hover:bg-dark-secondary p-2 rounded flex items-center gap-2"
+      routerLinkActive="bg-primary dark:bg-dark-primary text-white hover:bg-primary/80! dark:hover:bg-dark-primary/80!"
+    >
+      <lucide-icon [name]="Home" [size]="18" />
+      <span>ENRUTAMIENTO ROUTER REACTIVA</span>
+    </a>
+
+    <a
+      [routerLink]="[routerArray[0]]"
+      class="border border-dark-border hover:bg-secondary dark:hover:bg-dark-secondary p-2 rounded flex items-center gap-2"
+      routerLinkActive="bg-primary dark:bg-dark-primary text-white hover:bg-primary/80! dark:hover:bg-dark-primary/80!"
+    >
+      <lucide-icon [name]="Home" [size]="18" />
+      <span>ENRUTAMIENTO ROUTER REACTIVA</span>
+    </a>
+  </nav>
+</aside>
