@@ -1,1 +1,33 @@
-<p>group works!</p>
+<div class="flex gap-10 items-start">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-3 w-[500px]">
+    <div formGroupName="user" class="flex flex-col gap-3">
+      <div>
+        <JInput placeholder="Nombre" formControlName="name" />
+
+        @if (form.get('user.name')?.touched && form.get('user.name')?.invalid) {
+          <span class="text-red-500">Nombre invalido</span>
+        }
+      </div>
+
+      <div>
+        <JInput placeholder="Edad" formControlName="age" />
+
+        @if (form.get('user.age')?.touched && form.get('user.age')?.invalid) {
+          <span class="text-red-500">Edad invalida</span>
+        }
+      </div>
+
+      <JButton type="submit" classes="primary">Enviar</JButton>
+    </div>
+  </form>
+
+  <div class="w-full p-4 border rounded bg-gray-100 dark:bg-gray-800">
+    <h3 class="font-bold mb-2">Resultado:</h3>
+
+    @if (result) {
+      <pre>{{ result | json }}</pre>
+    } @else {
+      <span class="text-gray-400">Aun no hay datos</span>
+    }
+  </div>
+</div>

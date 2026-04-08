@@ -1,1 +1,32 @@
-<p>array works!</p>
+<div class="flex gap-10 items-start">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-3 w-[500px]">
+    <div formArrayName="phones" class="flex flex-col gap-3">
+
+        @for (phone of phones.controls; track $index) {
+            <div>
+                <JInput placeholder="Telefono" [formControlName]="$index" />
+
+                @if (phone.touched && phone.invalid) {
+                    <span class="text-red-500">Telefono invalido</span>
+                }
+            </div>
+        }
+
+    </div>
+
+    <div class="flex gap-2">
+        <JButton type="button" classes="primary" (clicked)="addPhone()">Agregar</JButton>
+        <JButton type="submit" classes="primary">Enviar</JButton>
+    </div>
+  </form>
+
+  <div class="w-full p-4 border rounded bg-gray-100 dark:bg-gray-800">
+    <h3 class="font-bold mb-2">Resultado:</h3>
+
+    @if (result) {
+      <pre>{{ result | json }}</pre>
+    } @else {
+      <span class="text-gray-400">Aun no hay datos</span>
+    }
+  </div>
+</div>

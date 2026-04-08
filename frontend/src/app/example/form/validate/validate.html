@@ -1,0 +1,152 @@
+<div class="flex gap-10 items-start">
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-3 w-[500px]">
+
+        <div>
+            <JInput placeholder="Name" formControlName="name" />
+
+            @if (form.get('name')?.touched && form.get('name')?.errors) {
+                @if (form.get('name')?.errors?.['required']) {
+                    <span class="text-red-500">Name es requerido</span>
+                } @else if (form.get('name')?.errors?.['minlength']) {
+                    <span class="text-red-500">Name debe tener al menos 3 caracteres</span>
+                } @else if (form.get('name')?.errors?.['maxlength']) {
+                    <span class="text-red-500">Name debe tener como máximo 10 caracteres</span>
+                }
+            }
+        </div>
+
+        <div>
+            <JInput placeholder="Email" formControlName="email" />
+
+            @if (form.get('email')?.touched && form.get('email')?.errors) {
+                @if (form.get('email')?.errors?.['required']) {
+                    <span class="text-red-500">Email es requerido</span>
+                } @else if (form.get('email')?.errors?.['email']) {
+                    <span class="text-red-500">Email no es válido</span>
+                }
+            }
+        </div>
+
+        <div>
+            <JInput type="password" placeholder="Password" formControlName="password" />
+
+            @if (form.get('password')?.touched && form.get('password')?.errors) {
+                @if (form.get('password')?.errors?.['required']) {
+                    <span class="text-red-500">Password es requerido</span>
+                } @else if (form.get('password')?.errors?.['minlength']) {
+                    <span class="text-red-500">Password debe tener al menos 8 caracteres</span>
+                } @else if (form.get('password')?.errors?.['pattern']) {
+                    <span class="text-red-500">Password debe contener mayúscula, minúscula y número</span>
+                }
+            }
+        </div>
+
+        <div>
+            <JInput type="password" placeholder="Confirmar Password" formControlName="confirmPassword" />
+
+            @if (form.get('confirmPassword')?.touched && form.get('confirmPassword')?.errors?.['required']) {
+                <span class="text-red-500">Confirmar Password es requerido</span>
+            }
+
+            @if (form.errors?.['mismatch']) {
+                <span class="text-red-500">Las contraseñas no coinciden</span>
+            }
+        </div>
+
+
+        <div>
+            <JInput type="number" placeholder="Edad" formControlName="age" />
+
+            @if (form.get('age')?.touched && form.get('age')?.errors) {
+                @if (form.get('age')?.errors?.['required']) {
+                    <span class="text-red-500">Edad es requerido</span>
+                } @else if (form.get('age')?.errors?.['min']) {
+                    <span class="text-red-500">Edad debe ser mayor a 18</span>
+                } @else if (form.get('age')?.errors?.['max']) {
+                    <span class="text-red-500">Edad debe ser menor a 120</span>
+                }
+            }
+        </div>
+
+        <div>
+            <JInput type="text" placeholder="Telefono" formControlName="phone" />
+
+            @if (form.get('phone')?.touched && form.get('phone')?.errors) {
+                @if (form.get('phone')?.errors?.['required']) {
+                    <span class="text-red-500">Telefono es requerido</span>
+                } @else if (form.get('phone')?.errors?.['pattern']) {
+                    <span class="text-red-500">El telefono debe tener 10 dígitos</span>
+                }
+            }
+        </div>
+
+        <div>
+            <JInput type="text" placeholder="Sitio Web" formControlName="website" />
+
+            @if (form.get('website')?.touched && form.get('website')?.errors) {
+                @if (form.get('website')?.errors?.['required']) {
+                    <span class="text-red-500">Sitio Web es requerido</span>
+                } @else if (form.get('website')?.errors?.['pattern']) {
+                    <span class="text-red-500">Sitio Web no es válido</span>
+                }
+            }
+        </div>
+
+
+        <div>
+            <JInput type="date" placeholder="Fecha de Nacimiento" formControlName="birthDay" />
+
+            @if (form.get('birthDay')?.touched && form.get('birthDay')?.errors) {
+                @if (form.get('birthDay')?.errors?.['required']) {
+                    <span class="text-red-500">Fecha de Nacimiento es requerida</span>
+                }
+            }
+        </div>
+
+
+        <div class="flex flex-col">
+            <select formControlName="gender" class="border p-2 rounded">
+                <option value="">Selecciona un género</option>
+                <option value="male">Masculino</option>
+                <option value="female">Femenino</option>
+            </select>
+
+            @if (form.get('gender')?.touched && form.get('gender')?.errors) {
+                @if (form.get('gender')?.errors?.['required']) {
+                    <span class="text-red-500">Género es requerido</span>
+                }
+            }
+        </div>
+
+
+        <div>
+            <label class="flex gap-2">
+                <input type="checkbox" formControlName="terms" />
+                Acepto los términos y condiciones
+            </label>
+
+                @if (form.get('terms')?.touched && form.get('terms')?.errors?.['required']) {
+                    <span class="text-red-500">Debes aceptar los términos</span>
+                }
+        </div>
+
+        <JButton type="submit" classes="primary">Enviar</JButton>
+    </form>
+
+
+
+
+
+    <div class="w-full p-4 border rounded bg-gray-100 dark:bg-gray-800">
+        
+        <h3 class="font-bold mb-2">Resultado:</h3>
+
+        @if (result) {
+            <pre>{{ result | json }}</pre>
+        }@else {
+            <span class="text-gray-400">Aun no hay datos</span>
+        }
+    </div>
+
+</div>

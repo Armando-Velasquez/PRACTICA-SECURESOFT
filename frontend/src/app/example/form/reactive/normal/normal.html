@@ -1,1 +1,38 @@
-<p>normal works!</p>
+<div class="flex gap-10 items-start">
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-3 w-[500px]">
+
+        <div>
+            <JInput placeholder="Email" formControlName="email" />
+
+            @if (form.get('email')?.touched && form.get('email')?.invalid) {
+                <span class="text-red-500">Email invalido</span>
+            }
+        </div>
+
+        <div>
+            <JInput type="password" placeholder="Password" formControlName="password" />
+
+            @if (form.get('password')?.touched && form.get('password')?.invalid) {
+                <span class="text-red-500">Password invalida</span>
+            }
+        </div>
+
+        <JButton type="submit" classes="primary">Enviar</JButton>
+    </form>
+
+
+    <div class="w-full p-4 border rounded bg-gray-100 dark:bg-gray-800">
+        
+        <h3 class="font-bold mb-2">Resultado:</h3>
+
+        @if (result) {
+            <pre>{{ result | json }}</pre>
+        }@else {
+            <span class="text-gray-400">Aun no hay datos</span>
+        }
+
+
+    </div>
+
+</div>

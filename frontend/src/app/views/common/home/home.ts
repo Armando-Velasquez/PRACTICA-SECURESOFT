@@ -8,10 +8,11 @@ import { TemplateGroup } from '../../../example/form/template-driven/group/group
 import { TemplateArray } from '../../../example/form/template-driven/array/array';
 import { Dialog } from '../../../example/alert/dialog/dialog';
 import { Toast } from '../../../example/alert/toast/toast';
+import { Validate } from '../../../example/form/validate/validate';
 
 @Component({
   selector: 'app-home',
-  imports: [ReactiveNormal, ReactiveGroup, ReactiveArray, TemplateNormal, TemplateGroup, TemplateArray, Dialog, Toast],
+  imports: [ReactiveNormal, ReactiveGroup, ReactiveArray, TemplateNormal, TemplateGroup, TemplateArray, Dialog, Toast, Validate],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
