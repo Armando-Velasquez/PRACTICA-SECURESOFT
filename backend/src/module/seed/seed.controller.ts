@@ -6,6 +6,7 @@ export class SeedController {
 
     static async seedData(req: Request, res: Response) {
         try {
+            console.log('Seeding data...');
             
             const result = await SeedService.seedData();
             return res.status(200).json(result);

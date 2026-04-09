@@ -1,1 +1,77 @@
-<p>auth works!</p>
+<!-- Toggle -->
+<div class="fixed top-4 right-4 z-50">
+  <JModeToggle />
+</div>
+
+<!-- Fondo + centrado -->
+<section class="min-h-screen w-full flex items-center justify-center px-4 bg-background dark:bg-dark-background">
+
+  <form
+    [formGroup]="loginForm"
+    (ngSubmit)="onLogin()"
+    class="w-full max-w-md"
+  >
+    <!-- Card -->
+    <div class="
+      flex flex-col gap-4 text-center
+      bg-card/90 dark:bg-dark-card/90
+      backdrop-blur-md
+      border border-border dark:border-dark-border
+      rounded-2xl p-8
+      shadow-xl shadow-black/10
+      ring-1 ring-black/5
+    ">
+
+      <!-- Header -->
+      <div class="mb-2">
+        <h1 class="text-3xl font-extrabold tracking-wide text-primary dark:text-white">
+          SecureSoft
+        </h1>
+        <p class="text-sm text-muted-foreground dark:text-dark-muted-foreground mt-1">
+          Inicia sesión en tu cuenta
+        </p>
+      </div>
+
+      <!-- EMAIL -->
+      <div class="w-full text-left">
+        <JInput placeholder="Ingresa tu correo" formControlName="email" />
+
+        @if (loginForm.get('email')?.touched && loginForm.get('email')?.errors) {
+          <div class="text-red-500 text-xs mt-1 space-y-1">
+            @if (loginForm.get('email')?.errors?.['required']) {
+              <p>El correo es obligatorio.</p>
+            }
+            @if (loginForm.get('email')?.errors?.['email']) {
+              <p>Correo inválido.</p>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- PASSWORD -->
+      <div class="w-full text-left">
+        <JInput type="password" placeholder="Ingresa tu contraseña" formControlName="password" />
+
+        @if (loginForm.get('password')?.touched && loginForm.get('password')?.errors) {
+          <div class="text-red-500 text-xs mt-1 space-y-1">
+            @if (loginForm.get('password')?.errors?.['required']) {
+              <p>La contraseña es obligatoria.</p>
+            }
+            @if (loginForm.get('password')?.errors?.['minlength']) {
+              <p>Mínimo 8 caracteres.</p>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Botón -->
+      <div class="mt-2">
+        <JButton type="submit" classes="primary w-full py-2.5 text-sm font-semibold tracking-wide">
+          INICIAR SESIÓN
+        </JButton>
+      </div>
+
+    </div>
+  </form>
+
+</section>

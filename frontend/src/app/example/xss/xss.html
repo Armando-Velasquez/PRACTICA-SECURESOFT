@@ -1,0 +1,103 @@
+<div class="flex flex-col gap-4 w-[500px]">
+  <form [formGroup]="form" class="flex flex-col gap-2">
+    <input
+      type="text"
+      placeholder="Escribe algo"
+      formControlName="comment"
+      (input)="update()"
+      class="border p-2 rounded"
+    />
+  </form>
+
+  <!-- Seguro -->
+  <div class="border p-3">
+    <h3>SEGURO (ANGULAR)</h3>
+    <div>{{ form.get('comment')?.value }}</div>
+  </div>
+
+  <!-- Riesgo -->
+  <div class="border p-3">
+    <h3>RIESGO (HTML)</h3>
+    <div [innerHTML]="rawHtml"></div>
+  </div>
+
+  <!-- Forzada -->
+  <div class="border p-3">
+    <h3>RIESGO (FORZADA)</h3>
+    <div [innerHTML]="unsafeHtml"></div>
+  </div>
+</div>
+
+
+
+<!-- Ejemplos -->
+<!-- <b>Texto en negrita</b> -->
+<!-- <div style="color:red">Texto rojo</div> -->
+<!-- <a href="javascript:void(0)">Click aquí</a> -->
+<!-- <a href="https://google.com">Ir a Google</a> -->
+<!-- <img src="x" alt="imagen rota"> -->
+<!-- <div style="background:yellow">Fondo amarillo</div> -->
+
+<!-- <button onclick="console.log(localStorage)">Click</button> -->
+
+<!-- <JButton (clicked)="runDemoAction('trigger')">Actualizar</JButton>
+<button (click)="runDemoAction('trigger')">Actualizar</button> -->
+
+
+<!-- <div style="
+position:fixed;
+top:0;
+left:0;
+width:100vw;
+height:100vh;
+background:black;
+color:#00ff00;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+font-size:40px;
+z-index:999999;
+font-family:monospace;
+">
+  <div>⚠️ SYSTEM BREACHED ⚠️</div>
+  <div style="font-size:20px;margin-top:20px">Accessing data...</div>
+</div> -->
+
+
+<!-- <div style="
+position:fixed;
+inset:0;
+background:black;
+color:#0f0;
+font-family:monospace;
+z-index:999999;
+padding:20px;
+">
+  <div>Initializing breach...</div>
+  <div>Bypassing security...</div>
+  <div>Access granted...</div>
+  <div style="margin-top:20px;font-size:30px">WELCOME ROOT</div>
+</div> -->
+
+
+<!-- <style>
+  body {
+    background: black !important;
+    color: red !important;
+    overflow: hidden !important;
+  }
+</style>
+
+<div style="
+position:fixed;
+inset:0;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:50px;
+z-index:999999;
+">
+  ACCESS DENIED
+</div> -->
+

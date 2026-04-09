@@ -4,6 +4,7 @@ import { LucideAngularModule, User, LogOut, Loader2 } from 'lucide-angular';
 import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { routesArrayCommon } from '../../views/routes/common.routes';
+import { AuthService } from '../../infrastructure/service/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -22,13 +23,18 @@ export class Navbar {
 
   loadingLogout: boolean = false;
 
-  constructor() {
+  constructor(
+    private readonly authService: AuthService
+  ) {
     this.routerArray = [ ...routesArrayCommon ]
   }
 
   logout() {
+    this.loadingLogout = true;
 
-    
+    this.authService.logoutUser().add(() => {
+      this.loadingLogout = false;
+    })
 
   }
 

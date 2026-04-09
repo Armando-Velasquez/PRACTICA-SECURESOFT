@@ -13,6 +13,8 @@ import { routes } from './views/routes/public.routes';
 import { routesMainContainer } from './views/routes/main-container.routes';
 
 // INTRCEPTORES
+import { authTokenInterceptor } from './core/interceptor/auth-token.interceptor';
+import { errorInterceptor } from './core/interceptor/error.interceptor';
 
 
 export const appConfig: ApplicationConfig = {
@@ -26,6 +28,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
 
     provideAnimations(),
+
+    provideHttpClient(withInterceptors([authTokenInterceptor, errorInterceptor])),
 
     CurrencyPipe,
     provideIcons({ lucideCross }),
