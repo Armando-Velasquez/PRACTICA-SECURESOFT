@@ -24,86 +24,86 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # Configuracion de Nginx
-      - name: Configure Nginx
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
-          echo "Creando carpetas necesarias..."
-          sudo mkdir -p /var/www/SECURESOFT/{backend,frontend}
-          sudo chmod -R 755 /var/www/SECURESOFT
+      # # Configuracion de Nginx
+      # - name: Configure Nginx
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+      #     echo "Creando carpetas necesarias..."
+      #     sudo mkdir -p /var/www/SECURESOFT/{backend,frontend}
+      #     sudo chmod -R 755 /var/www/SECURESOFT
 
-          echo "Configurando Nginx..."
-          sudo tee /etc/nginx/sites-available/securesoft.armandovelasquez.com > /dev/null << 'NGINX_CONF'
-          server {
-              listen 443 ssl;
-              server_name securesoft.armandovelasquez.com www.securesoft.armandovelasquez.com;
+      #     echo "Configurando Nginx..."
+      #     sudo tee /etc/nginx/sites-available/securesoft.armandovelasquez.com > /dev/null << 'NGINX_CONF'
+      #     server {
+      #         listen 443 ssl;
+      #         server_name securesoft.armandovelasquez.com www.securesoft.armandovelasquez.com;
 
-              location / {
-                  proxy_pass http://localhost:3009;
-                  proxy_http_version 1.1;
-                  proxy_set_header Upgrade $http_upgrade;
-                  proxy_set_header Connection 'upgrade';
-                  proxy_set_header Host $host;
-                  proxy_cache_bypass $http_upgrade;
-                  proxy_set_header X-Real-IP $remote_addr;
-                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                  proxy_set_header X-Forwarded-Proto $scheme;
-              }
-          }
+      #         location / {
+      #             proxy_pass http://localhost:3009;
+      #             proxy_http_version 1.1;
+      #             proxy_set_header Upgrade $http_upgrade;
+      #             proxy_set_header Connection 'upgrade';
+      #             proxy_set_header Host $host;
+      #             proxy_cache_bypass $http_upgrade;
+      #             proxy_set_header X-Real-IP $remote_addr;
+      #             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      #             proxy_set_header X-Forwarded-Proto $scheme;
+      #         }
+      #     }
 
-          server {
-              listen 80;
-              server_name securesoft.armandovelasquez.com www.securesoft.armandovelasquez.com;
-              return 301 https://$host$request_uri;
-          }
-          NGINX_CONF
+      #     server {
+      #         listen 80;
+      #         server_name securesoft.armandovelasquez.com www.securesoft.armandovelasquez.com;
+      #         return 301 https://$host$request_uri;
+      #     }
+      #     NGINX_CONF
 
-          echo "Habilitando configuración de Nginx..."
-          sudo ln -sf /etc/nginx/sites-available/securesoft.armandovelasquez.com /etc/nginx/sites-enabled/
-          sudo nginx -t && sudo systemctl restart nginx
-          EOF
+      #     echo "Habilitando configuración de Nginx..."
+      #     sudo ln -sf /etc/nginx/sites-available/securesoft.armandovelasquez.com /etc/nginx/sites-enabled/
+      #     sudo nginx -t && sudo systemctl restart nginx
+      #     EOF
 
-      # Configurar el servicio de Systemd
-      - name: Configure Systemd Service
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
-          echo "Configurando servicio de Systemd para Node.js..."
-          SERVICE_FILE="/etc/systemd/system/node-server-securesoft.service"
+      # # Configurar el servicio de Systemd
+      # - name: Configure Systemd Service
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+      #     echo "Configurando servicio de Systemd para Node.js..."
+      #     SERVICE_FILE="/etc/systemd/system/node-server-securesoft.service"
 
-          if [ ! -f "$SERVICE_FILE" ]; then
-            echo "Creando archivo de servicio de Systemd..."
-            sudo tee $SERVICE_FILE > /dev/null << 'EOCONFIG'
-          [Unit]
-          Description=Node.js Server for SECURESOFT
-          After=network.target
+      #     if [ ! -f "$SERVICE_FILE" ]; then
+      #       echo "Creando archivo de servicio de Systemd..."
+      #       sudo tee $SERVICE_FILE > /dev/null << 'EOCONFIG'
+      #     [Unit]
+      #     Description=Node.js Server for SECURESOFT
+      #     After=network.target
 
-          [Service]
-          ExecStart=/usr/bin/npm run start --prefix /var/www/SECURESOFT/backend
-          WorkingDirectory=/var/www/SECURESOFT/backend
-          StandardOutput=append:/var/www/SECURESOFT/backend.log
-          StandardError=append:/var/www/SECURESOFT/backend-error.log
-          Restart=always
-          User=root
-          Group=root
-          EnvironmentFile=/var/www/SECURESOFT/backend/.env
-          Environment=NODE_ENV=production
+      #     [Service]
+      #     ExecStart=/usr/bin/npm run start --prefix /var/www/SECURESOFT/backend
+      #     WorkingDirectory=/var/www/SECURESOFT/backend
+      #     StandardOutput=append:/var/www/SECURESOFT/backend.log
+      #     StandardError=append:/var/www/SECURESOFT/backend-error.log
+      #     Restart=always
+      #     User=root
+      #     Group=root
+      #     EnvironmentFile=/var/www/SECURESOFT/backend/.env
+      #     Environment=NODE_ENV=production
 
-          [Install]
-          WantedBy=multi-user.target
+      #     [Install]
+      #     WantedBy=multi-user.target
 
-          EOCONFIG
-            echo "Archivo de servicio creado exitosamente en $SERVICE_FILE."
-          else
-            echo "El archivo de servicio ya existe en $SERVICE_FILE. No se sobrescribirá."
-          fi
+      #     EOCONFIG
+      #       echo "Archivo de servicio creado exitosamente en $SERVICE_FILE."
+      #     else
+      #       echo "El archivo de servicio ya existe en $SERVICE_FILE. No se sobrescribirá."
+      #     fi
 
-          if [ -s "$SERVICE_FILE" ]; then
-            echo "Archivo de servicio confirmado y no está vacío."
-          else
-            echo "Error: El archivo de servicio está vacío o no se creó correctamente."
-            exit 1
-          fi
-          EOF
+      #     if [ -s "$SERVICE_FILE" ]; then
+      #       echo "Archivo de servicio confirmado y no está vacío."
+      #     else
+      #       echo "Error: El archivo de servicio está vacío o no se creó correctamente."
+      #       exit 1
+      #     fi
+      #     EOF
 
       # Copiar archivos al servidor y modificar package.json
       - name: Deploy Backend and Modify package.json for production
