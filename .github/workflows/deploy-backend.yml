@@ -105,7 +105,7 @@ jobs:
 
           if [ ! -f "$SERVICE_FILE" ]; then
             echo "Creando archivo de servicio de Systemd..."
-            sudo bash -c "cat > $SERVICE_FILE" << 'EOCONFIG'
+            sudo tee $SERVICE_FILE > /dev/null << 'EOCONFIG'
           [Unit]
           Description=Node.js Server for SECURESOFT
           After=network.target
