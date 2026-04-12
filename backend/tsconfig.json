@@ -13,10 +13,11 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
   "include": [
-    "**/*.ts",
+    "src/**/*.ts"
   ],
   "exclude": ["node_modules", "dist"]
 }
