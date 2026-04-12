@@ -3,7 +3,7 @@ name: Deploy Backend Express
 on:
   push:
     paths:
-      - 'backend/**'
+      - "backend/**"
     branches:
       - main # Rama de despliegue
   workflow_dispatch:
@@ -23,7 +23,6 @@ jobs:
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
 
       # Configuracion de Nginx
       - name: Configure Nginx
@@ -64,7 +63,6 @@ jobs:
           sudo nginx -t && sudo systemctl restart nginx
           EOF
 
-
       # Generar archivo .env desde secretos
       - name: Generate .env file on server
         run: |
@@ -89,7 +87,6 @@ jobs:
           echo "DBO_NAME=${{ vars.DBO_NAME }}" >> /var/www/SECURESOFT/backend/.env
 
           EOF
-
 
       # Configurar el servicio de Systemd
       - name: Configure Systemd Service
@@ -133,7 +130,6 @@ jobs:
           fi
           EOF
 
-
       # Copiar archivos al servidor y modificar package.json
       - name: Deploy Backend and Modify package.json for production
         run: |
@@ -153,13 +149,12 @@ jobs:
           fi
           EOF
 
-                    echo "Instalando dependencias..."
-                    ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          echo "Instalando dependencias..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
           cd /var/www/SECURESOFT/backend
           npm install --legacy-peer-deps
           npm run build
           EOF
-
 
       # Iniciar el servicio de Node.js
       - name: Start Backend
@@ -179,9 +174,6 @@ jobs:
           echo "El servicio se ha iniciado correctamente."
           EOF
 
-
-
-
 # // Comandos para ejecutar certbot
 # sudo certbot --nginx -d securesoft.armandovelasquez.com -d www.securesoft.armandovelasquez.com
 
@@ -197,7 +189,6 @@ jobs:
 # systemctl status node-server-securesoft.service
 
 # journalctl -u node-server-securesoft.service -f
-
 
 # sudo systemctl reload nginx
 # sudo systemctl daemon-reload
