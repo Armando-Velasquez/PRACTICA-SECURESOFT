@@ -1,0 +1,221 @@
+
+name: Deploy Backend Express
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+    branches:
+      - main # Rama de despliegue
+  workflow_dispatch:
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      # Clona el repositorio
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Configura el acceso SSH
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+
+      # Configuracion de Nginx (1 Eliminar el q va por defecto y crear esto manualmente)
+      - name: Configure Nginx
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          echo "Creando carpetas necesarias..."
+          sudo mkdir -p /var/www/SECURESOFT/{backend,frontend}
+          sudo chmod -R 755 /var/www/SECURESOFT
+
+          echo "Configurando Nginx..."
+          sudo bash -c "cat > /etc/nginx/sites-available/securesoft.armandovelasquez.com" << 'NGINX_CONF'
+      
+          server {
+              listen 443 ssl;
+              server_name securesoft.armandovelasquez.com www.securesoft.armandovelasquez.com;
+
+              location / {
+                  proxy_pass http://localhost:3009;
+                  proxy_http_version 1.1;
+                  proxy_set_header Upgrade $http_upgrade;
+                  proxy_set_header Connection 'upgrade';
+                  proxy_set_header Host $host;
+                  proxy_cache_bypass $http_upgrade;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+              }
+          }
+
+          server {
+              listen 80;
+              server_name securesoft.armandovelasquez.com www.securesoft.armandovelasquez.com;
+
+              # Redirige todo el tráfico HTTP a HTTPS
+              return 301 https://$host$request_uri;
+          }
+
+
+          NGINX_CONF
+
+          echo "Habilitando configuración de Nginx..."
+          sudo ln -sf /etc/nginx/sites-available/securesoft.armandovelasquez.com /etc/nginx/sites-enabled/
+          sudo nginx -t && sudo systemctl restart nginx
+          EOF
+
+
+
+      # Generar archivo .env desde secretos
+      - name: Generate .env file on server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+
+          echo "PORT=${{ vars.PORT }}" >> /var/www/SECURESOFT/backend/.env
+          echo "TIMEZONE=${{ vars.TIMEZONE }}" > /var/www/SECURESOFT/backend/.env
+          echo "TIME_SESSION=${{ vars.TIME_SESSION }}" >> /var/www/SECURESOFT/backend/.env
+          echo "PRODUCTION=${{ vars.PRODUCTION }}" >> /var/www/SECURESOFT/backend/.env
+          
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> /var/www/SECURESOFT/backend/.env
+
+
+          echo "BD_HOST=${{ vars.BD_HOST }}" >> /var/www/SECURESOFT/backend/.env
+          echo "BD_USER=${{ secrets.BD_USER }}" >> /var/www/SECURESOFT/backend/.env
+          echo "BD_PASSWORD=${{ secrets.BD_PASSWORD }}" >> /var/www/SECURESOFT/backend/.env
+          echo "DB_NAME=${{ vars.DB_NAME }}" >> /var/www/SECURESOFT/backend/.env
+
+
+          echo "BDO_DIALECT=${{ vars.BDO_DIALECT }}" >> /var/www/SECURESOFT/backend/.env
+          echo "BDO_HOST=${{ vars.BDO_HOST }}" >> /var/www/SECURESOFT/backend/.env
+          echo "BDO_USER=${{ secrets.BDO_USER }}" >> /var/www/SECURESOFT/backend/.env
+          echo "BDO_PASSWORD=${{ secrets.BDO_PASSWORD }}" >> /var/www/SECURESOFT/backend/.env
+          echo "DBO_NAME=${{ vars.DBO_NAME }}" >> /var/www/SECURESOFT/backend/.env
+
+          EOF
+
+
+
+      # Configurar el servicio de Systemd (1)
+      - name: Configure Systemd Service
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          echo "Configurando servicio de Systemd para Node.js..."
+          SERVICE_FILE="/etc/systemd/system/node-server-securesoft.service"
+
+          if [ ! -f "$SERVICE_FILE" ]; then
+            echo "Creando archivo de servicio de Systemd..."
+            sudo bash -c "cat > $SERVICE_FILE" << 'EOCONFIG'
+          [Unit]
+          Description=Node.js Server for SECURESOFT
+          After=network.target
+
+          [Service]
+          ExecStart=/usr/bin/npm run start --prefix /var/www/SECURESOFT/backend
+          WorkingDirectory=/var/www/SECURESOFT/backend
+          StandardOutput=append:/var/www/SECURESOFT/backend.log
+          StandardError=append:/var/www/SECURESOFT/backend-error.log
+          Restart=always
+          User=root
+          Group=root
+          EnvironmentFile=/var/www/SECURESOFT/backend/.env
+          Environment=NODE_ENV=production
+
+          [Install]
+          WantedBy=multi-user.target
+
+          EOCONFIG
+            echo "Archivo de servicio creado exitosamente en $SERVICE_FILE."
+          else
+            echo "El archivo de servicio ya existe en $SERVICE_FILE. No se sobrescribirá."
+          fi
+
+          # Verifica si el archivo se creó correctamente
+          if [ -s "$SERVICE_FILE" ]; then
+            echo "Archivo de servicio confirmado y no está vacío."
+          else
+            echo "Error: El archivo de servicio está vacío o no se creó correctamente."
+            exit 1
+          fi
+          EOF
+
+
+
+      # Copiar archivos al servidor y modificar package.json
+      - name: Deploy Backend and Modify package.json for production
+        run: |
+          echo "Copiando archivos al servidor..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p /var/www/SECURESOFT/backend"
+          scp -r ./backend/* ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/SECURESOFT/backend
+          
+          echo "Modificando package.json para producción..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          # Verificando si package.json existe
+          if [ -f "/var/www/SECURESOFT/backend/package.json" ]; then
+            echo "Actualizando alias '@' en package.json..."
+            
+            # Usamos jq para modificar el alias "@"
+            sudo jq '.["_moduleAliases"]["@"] = "./dist"' /var/www/SECURESOFT/backend/package.json > /var/www/SECURESOFT/backend/package.json.tmp && mv /var/www/SECURESOFT/backend/package.json.tmp /var/www/SECURESOFT/backend/package.json
+            
+            echo "Alias '@' actualizado correctamente en package.json."
+          else
+            echo "Error: package.json no encontrado en el directorio backend."
+            exit 1
+          fi
+          EOF
+          
+          echo "Instalando dependencias..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          cd /var/www/SECURESOFT/backend
+          npm install --legacy-peer-deps
+          npm run build
+          EOF
+
+
+      # Iniciar el servicio de Node.js
+      - name: Start Backend
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+
+          echo "Iniciando el servidor Node.js..."
+          echo "Recargando Systemd para registrar los servicios..."
+          sudo systemctl daemon-reload
+          
+          echo "Habilitando el servicio de Node.js..."
+          sudo systemctl enable node-server-securesoft.service
+
+          echo "Reiniciando el servicio de Node.js..."
+          sudo systemctl restart node-server-securesoft.service
+
+          echo "El servicio se ha iniciado correctamente."
+          EOF   
+
+
+
+
+# // Comandos para ejecutar certbot
+# sudo certbot --nginx -d securesoft.armandovelasquez.com -d www.securesoft.armandovelasquez.com
+
+# // Comandos para configurar nginx
+# sudo nano /etc/nginx/sites-available/securesoft.armandovelasquez.com
+# sudo ln -s /etc/nginx/sites-available/securesoft.armandovelasquez.com /etc/nginx/sites-enabled/
+
+# - Iniciar servidor
+# systemctl enable node-server-securesoft.service
+# systemctl restart node-server-securesoft.service
+# systemctl start node-server-securesoft.service
+# systemctl stop node-server-securesoft.service
+# systemctl status node-server-securesoft.service
+
+# journalctl -u node-server-securesoft.service -f
+
+
+# sudo systemctl reload nginx
+# sudo systemctl daemon-reload
+# sudo systemctl restart node-server-securesoft.service
+# tail -f /var/www/SECURESOFT/backend.log

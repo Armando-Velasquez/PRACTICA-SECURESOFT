@@ -24,7 +24,7 @@ export class AuthController {
 
             res.cookie('access_token', result.token, {
                 httpOnly: true,
-                secure: false,
+                secure: process.env.PRODUCTION === 'true' ? true : false,
                 sameSite: 'strict',
                 maxAge: 60 * 60 * 1000, // 1 hora
             })
@@ -55,7 +55,7 @@ export class AuthController {
 
             res.cookie('access_token', result.token, {
                 httpOnly: true,
-                secure: false,
+                secure: process.env.PRODUCTION === 'true' ? true : false,
                 sameSite: 'strict',
                 maxAge: 60 * 60 * 1000, // 1 hora
             })
@@ -109,7 +109,7 @@ export class AuthController {
             // Eliminar kookie
             res.clearCookie('access_token', {
                 httpOnly: true,
-                secure: false,
+                secure: process.env.PRODUCTION === 'true' ? true : false,
                 sameSite: 'strict',
             })
 
@@ -141,7 +141,7 @@ export class AuthController {
 
             res.cookie('access_token', result.token, {
                 httpOnly: true,
-                secure: false,
+                secure: process.env.PRODUCTION === 'true' ? true : false,
                 sameSite: 'strict',
                 maxAge: 60 * 60 * 1000, // 1 hora
             })
