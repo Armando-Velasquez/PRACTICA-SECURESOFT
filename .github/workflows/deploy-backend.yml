@@ -35,8 +35,7 @@ jobs:
           sudo chmod -R 755 /var/www/SECURESOFT
 
           echo "Configurando Nginx..."
-          sudo bash -c "cat > /etc/nginx/sites-available/securesoft.armandovelasquez.com" << 'NGINX_CONF'
-      
+          sudo tee /etc/nginx/sites-available/securesoft.armandovelasquez.com > /dev/null << 'NGINX_CONF'
           server {
               listen 443 ssl;
               server_name securesoft.armandovelasquez.com www.securesoft.armandovelasquez.com;
@@ -57,12 +56,8 @@ jobs:
           server {
               listen 80;
               server_name securesoft.armandovelasquez.com www.securesoft.armandovelasquez.com;
-
-              # Redirige todo el tráfico HTTP a HTTPS
               return 301 https://$host$request_uri;
           }
-
-
           NGINX_CONF
 
           echo "Habilitando configuración de Nginx..."
