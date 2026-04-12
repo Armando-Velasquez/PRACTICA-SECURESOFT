@@ -1,4 +1,3 @@
-
 name: Deploy Backend Express
 
 on:
@@ -26,7 +25,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
 
-      # Configuracion de Nginx (1 Eliminar el q va por defecto y crear esto manualmente)
+      # Configuracion de Nginx
       - name: Configure Nginx
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
@@ -66,7 +65,6 @@ jobs:
           EOF
 
 
-
       # Generar archivo .env desde secretos
       - name: Generate .env file on server
         run: |
@@ -76,15 +74,13 @@ jobs:
           echo "TIMEZONE=${{ vars.TIMEZONE }}" > /var/www/SECURESOFT/backend/.env
           echo "TIME_SESSION=${{ vars.TIME_SESSION }}" >> /var/www/SECURESOFT/backend/.env
           echo "PRODUCTION=${{ vars.PRODUCTION }}" >> /var/www/SECURESOFT/backend/.env
-          
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> /var/www/SECURESOFT/backend/.env
 
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> /var/www/SECURESOFT/backend/.env
 
           echo "BD_HOST=${{ vars.BD_HOST }}" >> /var/www/SECURESOFT/backend/.env
           echo "BD_USER=${{ secrets.BD_USER }}" >> /var/www/SECURESOFT/backend/.env
           echo "BD_PASSWORD=${{ secrets.BD_PASSWORD }}" >> /var/www/SECURESOFT/backend/.env
           echo "DB_NAME=${{ vars.DB_NAME }}" >> /var/www/SECURESOFT/backend/.env
-
 
           echo "BDO_DIALECT=${{ vars.BDO_DIALECT }}" >> /var/www/SECURESOFT/backend/.env
           echo "BDO_HOST=${{ vars.BDO_HOST }}" >> /var/www/SECURESOFT/backend/.env
@@ -95,8 +91,7 @@ jobs:
           EOF
 
 
-
-      # Configurar el servicio de Systemd (1)
+      # Configurar el servicio de Systemd
       - name: Configure Systemd Service
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
@@ -130,7 +125,6 @@ jobs:
             echo "El archivo de servicio ya existe en $SERVICE_FILE. No se sobrescribirá."
           fi
 
-          # Verifica si el archivo se creó correctamente
           if [ -s "$SERVICE_FILE" ]; then
             echo "Archivo de servicio confirmado y no está vacío."
           else
@@ -140,32 +134,27 @@ jobs:
           EOF
 
 
-
       # Copiar archivos al servidor y modificar package.json
       - name: Deploy Backend and Modify package.json for production
         run: |
           echo "Copiando archivos al servidor..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} "mkdir -p /var/www/SECURESOFT/backend"
           scp -r ./backend/* ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/SECURESOFT/backend
-          
+
           echo "Modificando package.json para producción..."
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
-          # Verificando si package.json existe
           if [ -f "/var/www/SECURESOFT/backend/package.json" ]; then
             echo "Actualizando alias '@' en package.json..."
-            
-            # Usamos jq para modificar el alias "@"
             sudo jq '.["_moduleAliases"]["@"] = "./dist"' /var/www/SECURESOFT/backend/package.json > /var/www/SECURESOFT/backend/package.json.tmp && mv /var/www/SECURESOFT/backend/package.json.tmp /var/www/SECURESOFT/backend/package.json
-            
             echo "Alias '@' actualizado correctamente en package.json."
           else
             echo "Error: package.json no encontrado en el directorio backend."
             exit 1
           fi
           EOF
-          
-          echo "Instalando dependencias..."
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+
+                    echo "Instalando dependencias..."
+                    ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
           cd /var/www/SECURESOFT/backend
           npm install --legacy-peer-deps
           npm run build
@@ -180,7 +169,7 @@ jobs:
           echo "Iniciando el servidor Node.js..."
           echo "Recargando Systemd para registrar los servicios..."
           sudo systemctl daemon-reload
-          
+
           echo "Habilitando el servicio de Node.js..."
           sudo systemctl enable node-server-securesoft.service
 
@@ -188,7 +177,7 @@ jobs:
           sudo systemctl restart node-server-securesoft.service
 
           echo "El servicio se ha iniciado correctamente."
-          EOF   
+          EOF
 
 
 
