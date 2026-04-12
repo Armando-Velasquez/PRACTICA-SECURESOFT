@@ -8,7 +8,18 @@ import { loadRoutes } from '@/src/route';
 import { connectDB } from './database';
 import { connection } from './database/connection';
 
+import rateLimit from 'express-rate-limit';
+
+import cookieParser from 'cookie-parser';
+
 const apiVersion = '/api/v1';
+
+// Configuración de rate limiting
+export const limiter = (minutos: number, max: number) => rateLimit({
+    windowMs: minutos * 60 * 1000, // minutos
+    max: max, // Limitar a max solicitudes por ventana
+    message: 'Demasiadas solicitudes desde esta IP, por favor inténtalo de nuevo después de 15 minutos.'
+})
 
 export class Server {
     app: Application;
@@ -19,6 +30,9 @@ export class Server {
         this.app = express();
         this.port = process.env.PORT || 3000;
         this.server = http.createServer(this.app);
+
+        // Cookies
+        this.app.use(cookieParser());
 
         // Middleware
         this.app.use(express.json());
@@ -34,7 +48,12 @@ export class Server {
         //     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
         //     allowedHeaders: ['Content-Type', 'Authorization']
         // }));
-        this.app.use(cors());
+        this.app.use(cors({
+            origin: 'http://localhost:4200',
+            credentials: true,
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+            allowedHeaders: ['Content-Type', 'Authorization'],
+        }));
 
         // Conexion de base de datos
         connectDB();

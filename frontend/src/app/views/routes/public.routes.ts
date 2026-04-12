@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 
 // Guards
+import { loggedOutGuard } from '../../core/guard/logged-out.guard';
+import { serverStatusGuard } from '../../core/guard/server-status.guard';
 
 // Functions
 import { TextFunction } from '../../shared/function/text.function';
@@ -20,7 +22,7 @@ const err500: string = '500';       // 2
 export const routesArray: string[] = [
     '/' + err404,
     '/' + login,
-    '/' + err500
+    '/' + err500,
 ];
 
 
@@ -29,7 +31,7 @@ export const routes: Routes = [
     {
         path: login, component: AuthComponent,
         data: { title: TextFunction.capitalizeFirstLetter(login) },
-        canActivate: []
+        canActivate: [loggedOutGuard, serverStatusGuard]
     },
     {
         path: err404, component: Err404Component,

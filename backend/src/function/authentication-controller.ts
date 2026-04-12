@@ -53,6 +53,7 @@ export async function authService(email: string, password: string, isAdmin: bool
 
     return {
         token,
+        id_user: auth.id_user,
         message: "Autenticación exitosa"
     }
 

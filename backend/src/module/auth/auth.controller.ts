@@ -17,11 +17,19 @@ export class AuthController {
         try {
             const { email, password } = req.body;
             const formData = { email, password };
+
             authController(req, res, formData);
 
             const result = await AuthService.authenticate({ email, password });
 
-            return res.status(200).json(result);
+            res.cookie('access_token', result.token, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'strict',
+                maxAge: 60 * 60 * 1000, // 1 hora
+            })
+
+            return res.status(200).json({ message: result.message, id_user: result.id_user });
 
         } catch (error) {
             errorCatch(res, error);
@@ -41,10 +49,18 @@ export class AuthController {
         try {
             const { email, password } = req.body;
             const formData = { email, password };
+
             authController(req, res, formData);
             const result = await AuthService.admin({ email, password });
 
-            return res.status(200).json(result);
+            res.cookie('access_token', result.token, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'strict',
+                maxAge: 60 * 60 * 1000, // 1 hora
+            })
+
+            return res.status(200).json({ message: result.message, id_user: result.id_user });
 
         } catch (error) {
             errorCatch(res, error);
@@ -84,11 +100,20 @@ export class AuthController {
      */
     static async logout(req: AuthenticateRequest, res: Response) {
         try {
-            const authorizaton = req.headers.authorization;
+            // const authorizaton = req.headers.authorization;
 
-            if (!authorizaton) return res.status(400).json({ message: "El token es requerido" });
+            const token = req.cookies?.access_token;
 
-            const result = await AuthService.logout(authorizaton);
+            if (!token) return res.status(400).json({ message: "El token es requerido" });
+
+            // Eliminar kookie
+            res.clearCookie('access_token', {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'strict',
+            })
+
+            const result = await AuthService.logout(token);
 
             return res.status(200).json(result);
 
@@ -107,13 +132,21 @@ export class AuthController {
      */
     static async tokenRenew(req: AuthenticateRequest, res: Response) {
         try {
-            const authorizaton = req.headers.authorization;
+            // const authorizaton = req.headers.authorization;
+            const token = req.cookies?.access_token;
 
-            if (!authorizaton) return res.status(400).json({ message: "El token es requerido" });
+            if (!token) return res.status(400).json({ message: "El token es requerido" });
 
-            const result = await AuthService.tokenRenew(authorizaton);
+            const result = await AuthService.tokenRenew(token);
 
-            return res.status(200).json(result);
+            res.cookie('access_token', result.token, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'strict',
+                maxAge: 60 * 60 * 1000, // 1 hora
+            })
+
+            return res.status(200).json({ message: result.message });
 
         } catch (error) {
             errorCatch(res, error);

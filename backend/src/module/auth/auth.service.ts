@@ -1,18 +1,30 @@
 import { authService } from "@/src/function/authentication-controller";
 import jwt, { JwtPayload } from "jsonwebtoken";
-
+import crypto from "crypto";
 
 export interface DecodedUser extends JwtPayload {
     id_user?: number,
     firstname_user?: string,
     lastname_user?: string,
     id_role?: number,
+
+    jti?: string,
+    iss?: string,
+    aud?: string,
+    exp?: number,
+
 }
 
 const JWT_SECRET = process.env.SECRET_KEY!;
 const DEFAULT_EXPIRATION = Number(process.env.TIME_SESSION) * 60 * 60;
 
 let revokedTokens: any = [];
+
+export const ISSUER = "secure-soft-api"
+export const AUDIENCE = "secure-soft-client"
+
+let revokedTokenIds: string[] = [];
+
 
 /**
  * Genera un token JWT para el usuario autenticado
@@ -25,6 +37,9 @@ export const authToken = async (decodedUser: DecodedUser) => {
         firstname_user: decodedUser.firstname_user,
         lastname_user: decodedUser.lastname_user,
         id_role: decodedUser.id_role,
+        jti: crypto.randomUUID(),
+        iss: ISSUER,
+        aud: AUDIENCE,
     }, JWT_SECRET, { expiresIn: DEFAULT_EXPIRATION });
 }
 
@@ -33,8 +48,11 @@ export const authToken = async (decodedUser: DecodedUser) => {
  * Revocar token
  * @param token 
  */
-const revokeToken = async (token: string) => {
-    revokedTokens.push(token);
+// const revokeToken = async (token: string) => {
+//     revokedTokens.push(token);
+// }
+const revokeToken = async (jti: string) => {
+    revokedTokenIds.push(jti);
 }
 
 /**
@@ -42,8 +60,11 @@ const revokeToken = async (token: string) => {
  * @param token 
  * @returns 
  */
-export const isTokenRevoked = async (token: string) => {
-    return revokedTokens.includes(token);
+// export const isTokenRevoked = async (token: string) => {
+//     return revokedTokens.includes(token);
+// }
+export const isTokenRevoked = async (jti: string) => {
+    return revokedTokenIds.includes(jti);
 }
 
 
@@ -93,40 +114,64 @@ export class AuthService {
 
     /**
      * Cerrar sesión y revocar token JWT
-     * @param authorization 
+     * @param token 
      * @returns 
      */
-    static async logout(authorization: string) {
-        const token = authorization.split(" ")[1];
+    static async logout(token: string) {
+        // const token = authorization.split(" ")[1];
 
-        // Verificar
-        if (!(await isTokenRevoked(token))) {
-            console.log("Revocando token:", token);
-            await revokeToken(token);
+        // // Verificar
+        // if (!(await isTokenRevoked(token))) {
+        //     console.log("Revocando token:", token);
+        //     await revokeToken(token);
+        // }
+
+        const decoded = jwt.verify(token, JWT_SECRET, {
+            issuer: ISSUER,
+            audience: AUDIENCE,
+        }) as DecodedUser;
+
+        if (decoded.jti) {
+            await revokeToken(decoded.jti);
         }
 
         return {
             message: "Logout exitoso"
         }
-
-
     }
 
 
 
     /**
      * Renovar token JWT
-     * @param authorization 
+     * @param token 
      * @returns 
      */
-    static async tokenRenew(authorization: string) {
-        const token = authorization.split(" ")[1];
+    static async tokenRenew(token: string) {
+        // const token = authorization.split(" ")[1];
 
-        const decoded = jwt.verify(token, JWT_SECRET)
+        // const decoded = jwt.verify(token, JWT_SECRET)
 
-        const newToken = await authToken(decoded as DecodedUser);
+        // const newToken = await authToken(decoded as DecodedUser);
 
-        await revokeToken(token);
+        // await revokeToken(token);
+
+        const decoded = jwt.verify(token, JWT_SECRET, {
+            issuer: ISSUER,
+            audience: AUDIENCE,
+        }) as DecodedUser;
+
+        // Validar que el token no haya sido revocado
+        if (decoded.jti && await isTokenRevoked(decoded.jti)) {
+            throw new Error("Token revocado");
+        }
+
+        const newToken = await authToken(decoded);
+
+        // Revocar el token antiguo
+        if (decoded.jti) {
+            await revokeToken(decoded.jti);
+        }
 
         return {
             token: newToken,

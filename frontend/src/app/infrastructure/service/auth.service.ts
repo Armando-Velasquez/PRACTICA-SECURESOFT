@@ -62,15 +62,19 @@ export class AuthService {
   }
 
   // Logout User
-  logoutUser() {
+  logoutUser(redirect: boolean = true) {
     return this.http.get<any>(`${this.url}/logout`).subscribe({
       next: (response) => {
         this.clearVarsSession();
-        window.location.href = routesArray[1] // Login
+        if (redirect) {
+          window.location.href = routesArray[1] // Login
+        }
       },
       error: (error) => {
         this.clearVarsSession();
-        window.location.href = routesArray[1] // Login
+        if (redirect) {
+          window.location.href = routesArray[1] // Login
+        }
       }
     })
   }
@@ -81,7 +85,7 @@ export class AuthService {
     return new Observable<void>((observer) => {
       this.http.get<any>(`${this.url}/token/renew`).subscribe({
         next: (response) => {
-          localStorage.setItem('token', response.token);
+          // localStorage.setItem('token', response.token);
 
           this.getUserDetails(true).subscribe({
             next: () => {
@@ -110,8 +114,9 @@ export class AuthService {
   // Clear Vars Session
   clearVarsSession() {
     this.sessionData = null;
-    localStorage.removeItem('token');
+    // localStorage.removeItem('token');
     localStorage.removeItem('time-session');
+    localStorage.removeItem('session');
   }
 
   // Obtener los datos del usuario
@@ -120,7 +125,8 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    // return !!localStorage.getItem('token');
+    return this.sessionData !== null;
   }
 
   isLogoutInProgress(): boolean {

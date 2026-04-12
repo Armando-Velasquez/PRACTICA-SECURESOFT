@@ -5,6 +5,7 @@ import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { routesArrayCommon } from '../../views/routes/common.routes';
 import { AuthService } from '../../infrastructure/service/auth.service';
+import { DetailsUser } from '../../infrastructure/interface/session.interface';
 
 @Component({
   selector: 'app-navbar',
@@ -19,6 +20,8 @@ export class Navbar {
   LogOut = LogOut;
   Loader2 = Loader2;
 
+  session!: DetailsUser | null;
+
   routerArray: string[] = []
 
   loadingLogout: boolean = false;
@@ -27,6 +30,8 @@ export class Navbar {
     private readonly authService: AuthService
   ) {
     this.routerArray = [ ...routesArrayCommon ]
+
+    this.session = this.authService.getSessionData();
   }
 
   logout() {

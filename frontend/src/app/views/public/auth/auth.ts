@@ -53,7 +53,8 @@ export class AuthComponent {
 
         console.log('Login successful:', response);
 
-        localStorage.setItem('token', response.token);
+        // localStorage.setItem('token', response.token);
+        localStorage.setItem('session', 'true');
 
         this.router.navigate([routesArrayCommon[0]]);
 

@@ -14,6 +14,7 @@ import { routesMainContainer } from './views/routes/main-container.routes';
 
 // INTRCEPTORES
 import { authTokenInterceptor } from './core/interceptor/auth-token.interceptor';
+import { authInterceptor } from './core/interceptor/auth.interceptor';
 import { errorInterceptor } from './core/interceptor/error.interceptor';
 
 
@@ -29,7 +30,7 @@ export const appConfig: ApplicationConfig = {
 
     provideAnimations(),
 
-    provideHttpClient(withInterceptors([authTokenInterceptor, errorInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
 
     CurrencyPipe,
     provideIcons({ lucideCross }),

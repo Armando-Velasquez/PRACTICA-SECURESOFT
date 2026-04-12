@@ -2,6 +2,7 @@ import { Routes } from "@angular/router";
 
 
 // Guards
+import { roleGuard } from "../../core/guard/role.guard";
 
 // Functions
 import { TextFunction } from '../../shared/function/text.function';
@@ -34,10 +35,10 @@ export const routesCommon: Routes = [
     },
     {
         path: profile, component: ProfileComponent,
-        // canActivate: [],
+        canActivate: [roleGuard],
         data: {
             title: TextFunction.capitalizeFirstLetter(profile),
-            // allowedRoles: [1, 2]
+            allowedRoles: [2]
         },
     }
 
