@@ -11,6 +11,7 @@ import { connection } from './database/connection';
 import rateLimit from 'express-rate-limit';
 
 import cookieParser from 'cookie-parser';
+import { PORT } from './enviroment';
 
 const apiVersion = '/api/v1';
 
@@ -28,7 +29,7 @@ class Server {
 
     constructor() {
         this.app = express();
-        this.port = process.env.PORT || 3000;
+        this.port = PORT || 3000;
         this.server = http.createServer(this.app);
 
         // Cookies

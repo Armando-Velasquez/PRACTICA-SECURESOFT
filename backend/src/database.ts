@@ -1,11 +1,12 @@
 import mysql from 'mysql';
+import { BD_HOST, BD_PASSWORD, BD_USER, DB_NAME } from './enviroment';
 
 // Configuración de la conexión a la base de datos
 const dbConnection = mysql.createConnection({
-    host: process.env.BD_HOST,
-    user: process.env.BD_USER,
-    password: process.env.BD_PASSWORD,
-    database: process.env.DB_NAME,
+    host: BD_HOST,
+    user: BD_USER,
+    password: BD_PASSWORD,
+    database: DB_NAME,
     multipleStatements: true // Permite ejecutar múltiples consultas en una sola llamada
 });
 
@@ -16,7 +17,7 @@ export function connectDB(): void {
             console.error('Error connecting to the database:', err);
             return;
         }
-        console.log('Connected to the database', process.env.DB_NAME);
+        console.log('Connected to the database', DB_NAME);
     })
 }
 

@@ -3,6 +3,7 @@ import { AuthService } from "./auth.service";
 import { AuthenticateRequest } from "@/src/middleware/authotization.middleware";
 import { errorCatch } from "@/src/function/error-catch";
 import { authController } from "@/src/function/authentication-controller";
+import { PRODUCTION } from "@/src/enviroment";
 
 
 export class AuthController {
@@ -24,7 +25,7 @@ export class AuthController {
 
             res.cookie('access_token', result.token, {
                 httpOnly: true,
-                secure: process.env.PRODUCTION === 'true' ? true : false,
+                secure: PRODUCTION === 'true' ? true : false,
                 sameSite: 'strict',
                 maxAge: 60 * 60 * 1000, // 1 hora
             })
@@ -55,7 +56,7 @@ export class AuthController {
 
             res.cookie('access_token', result.token, {
                 httpOnly: true,
-                secure: process.env.PRODUCTION === 'true' ? true : false,
+                secure: PRODUCTION === 'true' ? true : false,
                 sameSite: 'strict',
                 maxAge: 60 * 60 * 1000, // 1 hora
             })
@@ -109,7 +110,7 @@ export class AuthController {
             // Eliminar kookie
             res.clearCookie('access_token', {
                 httpOnly: true,
-                secure: process.env.PRODUCTION === 'true' ? true : false,
+                secure: PRODUCTION === 'true' ? true : false,
                 sameSite: 'strict',
             })
 
@@ -141,7 +142,7 @@ export class AuthController {
 
             res.cookie('access_token', result.token, {
                 httpOnly: true,
-                secure: process.env.PRODUCTION === 'true' ? true : false,
+                secure: PRODUCTION === 'true' ? true : false,
                 sameSite: 'strict',
                 maxAge: 60 * 60 * 1000, // 1 hora
             })

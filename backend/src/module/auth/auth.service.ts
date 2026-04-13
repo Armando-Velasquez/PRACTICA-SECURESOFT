@@ -1,6 +1,7 @@
 import { authService } from "@/src/function/authentication-controller";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import crypto from "crypto";
+import { SECRET_KEY, TIME_SESSION } from "@/src/enviroment";
 
 export interface DecodedUser extends JwtPayload {
     id_user?: number,
@@ -15,8 +16,8 @@ export interface DecodedUser extends JwtPayload {
 
 }
 
-const JWT_SECRET = process.env.SECRET_KEY!;
-const DEFAULT_EXPIRATION = Number(process.env.TIME_SESSION) * 60 * 60;
+const JWT_SECRET = SECRET_KEY;
+const DEFAULT_EXPIRATION = Number(TIME_SESSION) * 60 * 60;
 
 let revokedTokens: any = [];
 

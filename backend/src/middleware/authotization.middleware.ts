@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { AUDIENCE, DecodedUser, ISSUER, isTokenRevoked } from "../module/auth/auth.service";
 import jwt from "jsonwebtoken";
+import { SECRET_KEY } from "../enviroment";
 
-const JWT_SECRET = process.env.SECRET_KEY!;
+const JWT_SECRET = SECRET_KEY;
 
 export interface AuthenticateRequest extends Request {
     user?: DecodedUser;

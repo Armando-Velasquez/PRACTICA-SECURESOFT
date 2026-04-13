@@ -1,13 +1,7 @@
 
 import { PoolOptions, Sequelize } from "sequelize";
 import { initModels } from "./init-model";
-
-const TIMEZONE = process.env.TIMEZONE;
-const BDO_DIALECT = process.env.BDO_DIALECT;
-const BDO_HOST = process.env.BDO_HOST;
-const BDO_USER = process.env.BDO_USER;
-const BDO_PASSWORD = process.env.BDO_PASSWORD;
-const DBO_NAME = process.env.DBO_NAME;
+import { BDO_DIALECT, BDO_HOST, BDO_PASSWORD, BDO_USER, DBO_NAME, TIMEZONE } from "../enviroment";
 
 const poolDB: PoolOptions = {
     max: 50,
@@ -17,12 +11,12 @@ const poolDB: PoolOptions = {
 }
 
 export const dbConnect: Sequelize = new Sequelize(
-    DBO_NAME!,
-    BDO_USER!,
-    BDO_PASSWORD!,
+    DBO_NAME,
+    BDO_USER,
+    BDO_PASSWORD,
     {
         host: BDO_HOST,
-        dialect: BDO_DIALECT as "mysql" | "postgres" | "sqlite" | "mariadb" | "mssql",
+        dialect: BDO_DIALECT,
         logging: false,
         timezone: TIMEZONE,
         pool: poolDB

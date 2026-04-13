@@ -1,3 +1,4 @@
+import { SECRET_KEY } from "@/src/enviroment";
 import { Request, Response, Router } from "express";
 
 const router = Router();
@@ -89,8 +90,6 @@ router.post('/createPayload', (req: Request, res: Response) => {
 
 
 import jwt from 'jsonwebtoken';
-
-const SECRET_KEY = (process.env.SECRET_KEY as string);
 
 router.post('/login', (req: Request, res: Response) => {
     const { username, password } = req.body;
