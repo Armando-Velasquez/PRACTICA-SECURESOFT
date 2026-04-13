@@ -29,7 +29,8 @@ class Server {
 
     constructor() {
         this.app = express();
-        this.port = PORT || 3000;
+        this.port = PORT || 3009;
+        console.log('PORT ENV:', PORT);
         this.server = http.createServer(this.app);
 
         // Cookies

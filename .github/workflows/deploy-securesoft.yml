@@ -39,44 +39,44 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # Configuracion de Nginx - BACKEND
-      - name: Configure Nginx
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
-          echo "Creando carpetas necesarias..."
-          sudo mkdir -p /var/www/SECURESOFT/{backend,frontend}
-          sudo chmod -R 755 /var/www/SECURESOFT
+      # # Configuracion de Nginx - BACKEND
+      # - name: Configure Nginx
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+      #     echo "Creando carpetas necesarias..."
+      #     sudo mkdir -p /var/www/SECURESOFT/{backend,frontend}
+      #     sudo chmod -R 755 /var/www/SECURESOFT
 
-          echo "Configurando Nginx..."
-          sudo tee /etc/nginx/sites-available/securesoft-rest.armandovelasquez.com > /dev/null << 'NGINX_CONF'
-          server {
-              listen 443 ssl;
-              server_name securesoft-rest.armandovelasquez.com www.securesoft-rest.armandovelasquez.com;
+      #     echo "Configurando Nginx..."
+      #     sudo tee /etc/nginx/sites-available/securesoft-rest.armandovelasquez.com > /dev/null << 'NGINX_CONF'
+      #     server {
+      #         listen 443 ssl;
+      #         server_name securesoft-rest.armandovelasquez.com www.securesoft-rest.armandovelasquez.com;
 
-              location / {
-                  proxy_pass http://localhost:3009;
-                  proxy_http_version 1.1;
-                  proxy_set_header Upgrade $http_upgrade;
-                  proxy_set_header Connection 'upgrade';
-                  proxy_set_header Host $host;
-                  proxy_cache_bypass $http_upgrade;
-                  proxy_set_header X-Real-IP $remote_addr;
-                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                  proxy_set_header X-Forwarded-Proto $scheme;
-              }
-          }
+      #         location / {
+      #             proxy_pass http://localhost:3009;
+      #             proxy_http_version 1.1;
+      #             proxy_set_header Upgrade $http_upgrade;
+      #             proxy_set_header Connection 'upgrade';
+      #             proxy_set_header Host $host;
+      #             proxy_cache_bypass $http_upgrade;
+      #             proxy_set_header X-Real-IP $remote_addr;
+      #             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      #             proxy_set_header X-Forwarded-Proto $scheme;
+      #         }
+      #     }
 
-          server {
-              listen 80;
-              server_name securesoft-rest.armandovelasquez.com www.securesoft-rest.armandovelasquez.com;
-              return 301 https://$host$request_uri;
-          }
-          NGINX_CONF
+      #     server {
+      #         listen 80;
+      #         server_name securesoft-rest.armandovelasquez.com www.securesoft-rest.armandovelasquez.com;
+      #         return 301 https://$host$request_uri;
+      #     }
+      #     NGINX_CONF
 
-          echo "Habilitando configuración de Nginx..."
-          sudo ln -sf /etc/nginx/sites-available/securesoft-rest.armandovelasquez.com /etc/nginx/sites-enabled/
-          sudo nginx -t && sudo systemctl restart nginx
-          EOF
+      #     echo "Habilitando configuración de Nginx..."
+      #     sudo ln -sf /etc/nginx/sites-available/securesoft-rest.armandovelasquez.com /etc/nginx/sites-enabled/
+      #     sudo nginx -t && sudo systemctl restart nginx
+      #     EOF
 
 
 
