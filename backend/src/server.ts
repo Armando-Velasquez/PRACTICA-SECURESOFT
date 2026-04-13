@@ -50,7 +50,7 @@ class Server {
         //     allowedHeaders: ['Content-Type', 'Authorization']
         // }));
         this.app.use(cors({
-            origin: 'http://localhost:4200',
+            origin: ['http://localhost:4200', 'https://securesoft.armandovelasquez.com'],
             credentials: true,
             methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
             allowedHeaders: ['Content-Type', 'Authorization'],
