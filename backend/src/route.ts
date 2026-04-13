@@ -4,7 +4,7 @@ import path from 'path';
 import { Application } from 'express';
 
 export function loadRoutes(app: Application, appVersion: string) {
-    const srcPath = path.join(__dirname);
+    const srcPath = path.join(__dirname, '/module');
 
     const isRouteFile = (file: string) => file.endsWith('.routes.ts') || file.endsWith('.routes.js');
     const getRouteName = (file: string) => file.replace('.routes.ts', '').replace('.routes.js', '');
