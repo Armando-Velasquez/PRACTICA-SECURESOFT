@@ -5,6 +5,8 @@ import { limiter } from "@/src/server";
 
 const router = Router();
 
+router.post("/google", AuthController.googleAuth);
+
 router.post("/login", limiter(15, 5), AuthController.authenticate);
 router.post("/admin", AuthController.admin);
 router.get("/token/detail", verifyToken, AuthController.tokenDetail);

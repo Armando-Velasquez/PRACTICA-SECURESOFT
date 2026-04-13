@@ -13,7 +13,7 @@
 # cat ~/.ssh/id_rsa
 
 
-name: Deploy SecureSoft
+name: Deploy SecureSoftFI
 
 on:
   push:
@@ -130,7 +130,7 @@ jobs:
       #     Restart=always
       #     User=root
       #     Group=root
-      #     #EnvironmentFile=/var/www/SECURESOFT/backend/.env
+      #     EnvironmentFile=/var/www/SECURESOFT/backend/.env
       #     Environment=NODE_ENV=production
 
       #     [Install]
@@ -220,6 +220,8 @@ jobs:
 
           echo "El servicio se ha iniciado correctamente."
           EOF
+
+
 
 # // Comandos para ejecutar certbot - backend
 # sudo certbot --nginx -d securesoft-rest.armandovelasquez.com -d www.securesoft-rest.armandovelasquez.com

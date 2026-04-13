@@ -6,6 +6,9 @@ export interface Auth {
     password_auth: string;
     salt_auth: string;
 
+    mfa_secret: string | null;
+    mfa_enabled: boolean;
+
     id_user: number;
 
     user?: User;

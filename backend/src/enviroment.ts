@@ -7,6 +7,7 @@ interface EnvPromps {
     PRODUCTION: string;
 
     SECRET_KEY: string;
+    GOOGLE_CLIENT_ID: string;
     
     BD_HOST: string;
     BD_USER: string;
@@ -27,6 +28,7 @@ export const {
     PRODUCTION,
 
     SECRET_KEY,
+    GOOGLE_CLIENT_ID,
     
     BD_HOST,
     BD_USER,

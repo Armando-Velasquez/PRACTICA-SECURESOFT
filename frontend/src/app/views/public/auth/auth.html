@@ -4,24 +4,14 @@
 </div>
 
 <!-- Fondo + centrado -->
-<section class="min-h-screen w-full flex items-center justify-center px-4 bg-background dark:bg-dark-background">
-
-  <form
-    [formGroup]="loginForm"
-    (ngSubmit)="onLogin()"
-    class="w-full max-w-md"
-  >
+<section
+  class="min-h-screen w-full flex items-center justify-center px-4 bg-background dark:bg-dark-background"
+>
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="w-full max-w-md">
     <!-- Card -->
-    <div class="
-      flex flex-col gap-4 text-center
-      bg-card/90 dark:bg-dark-card/90
-      backdrop-blur-md
-      border border-border dark:border-dark-border
-      rounded-2xl p-8
-      shadow-xl shadow-black/10
-      ring-1 ring-black/5
-    ">
-
+    <div
+      class="flex flex-col gap-4 text-center bg-card/90 dark:bg-dark-card/90 backdrop-blur-md border border-border dark:border-dark-border rounded-2xl p-8 shadow-xl shadow-black/10 ring-1 ring-black/5"
+    >
       <!-- Header -->
       <div class="mb-2">
         <h1 class="text-3xl font-extrabold tracking-wide text-primary dark:text-white">
@@ -66,12 +56,35 @@
 
       <!-- Botón -->
       <div class="mt-2">
+        <div id="googleBtn"></div>
         <JButton type="submit" classes="primary w-full py-2.5 text-sm font-semibold tracking-wide">
           INICIAR SESIÓN
         </JButton>
       </div>
-
     </div>
   </form>
-
 </section>
+
+@if (showMfa) {
+  <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-900 p-6 rounded-xl shadow-xl text-center">
+      <h2 class="text-xl font-bold mb-3">Verificación MFA</h2>
+      <p class="text-sm text-gray-500 mb-4">Ingresa el codigo de Google Authenticator</p>
+
+      <form [formGroup]="mfaForm" (ngSubmit)="onMfaSubmit()">
+        <JInput
+          type="number"
+          placeholder="Código de 6 digitos"
+          formControlName="code"
+          maxlength="6"
+        />
+
+        @if (mfaForm.get('code')?.touched && mfaForm.get('code')?.invalid) {
+          <div class="text-red-500 text-sm mt-2">Codigo invalido</div>
+        }
+
+        <JButton type="submit" classes="primary mt-4">Verificar</JButton>
+      </form>
+    </div>
+  </div>
+}

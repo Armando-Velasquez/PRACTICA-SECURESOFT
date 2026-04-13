@@ -107,6 +107,8 @@ export class UserService {
                 email_auth: formData.email_auth,
                 password_auth: hash,
                 salt_auth: salt,
+                mfa_secret: null,
+                mfa_enabled: false,
                 id_user: user.id_user!
             }, { transaction })
 
@@ -160,6 +162,8 @@ export class UserService {
                 email_auth: formData.email_auth,
                 password_auth: hash,
                 salt_auth: salt,
+                mfa_secret: null,
+                mfa_enabled: false,
                 id_user
             })
         }

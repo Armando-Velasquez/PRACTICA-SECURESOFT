@@ -12,6 +12,10 @@ export const environment = {
     urlBase: `${baseUrl}/api/v1`,
 
     urlAuth: '/auth',
+    urlMfa: '/mfa',
     urlUser: '/user',
     urlRole: '/role',
+
+
+    CLIENT_ID: '606905641465-8nfrjuso38vmq6d71lpvarbgobir633v.apps.googleusercontent.com'
 }

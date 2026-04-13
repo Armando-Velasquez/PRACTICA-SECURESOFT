@@ -32,6 +32,8 @@ export class SeedService {
                 email_auth: auth.email,
                 password_auth: hash,
                 salt_auth: salt,
+                mfa_secret: null,
+                mfa_enabled: false,
                 id_user: auth.id_user
             }
         })

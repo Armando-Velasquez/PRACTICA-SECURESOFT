@@ -1,7 +1,9 @@
 import { authService } from "@/src/function/authentication-controller";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import crypto from "crypto";
-import { SECRET_KEY, TIME_SESSION } from "@/src/enviroment";
+import { GOOGLE_CLIENT_ID, SECRET_KEY, TIME_SESSION } from "@/src/enviroment";
+import { OAuth2Client } from "google-auth-library";
+import { models } from "@/src/database/connection";
 
 export interface DecodedUser extends JwtPayload {
     id_user?: number,
@@ -26,6 +28,7 @@ export const AUDIENCE = "secure-soft-client"
 
 let revokedTokenIds: string[] = [];
 
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID)
 
 /**
  * Genera un token JWT para el usuario autenticado
@@ -70,6 +73,61 @@ export const isTokenRevoked = async (jti: string) => {
 
 
 export class AuthService {
+
+    static async googleAuth(credential: string) {
+
+        console.log("CREDENTIAL:", credential);
+
+        const tikent = await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: GOOGLE_CLIENT_ID,
+        });
+
+        const payload = tikent.getPayload();
+
+        if (!payload?.email) {
+            throw new Error("Email no encontrado en el token de Google");
+        }
+
+        // Buscar usuario
+        const auth = await models.Auth.findOne({
+            where: {
+                email_auth: payload.email
+            },
+            include: [{ model: models.User, as: "user" }]
+        })
+
+        if (!auth) {
+            throw new Error("Usuario no encontrado");
+        }
+
+        const decodedUser: DecodedUser = {
+            id_user: auth.id_user,
+            firstname_user: auth.user?.firstname_user.split(" ")[0],
+            lastname_user: auth.user?.lastname_user.split(" ")[0],
+            id_role: auth.user?.id_role,
+        }
+
+        // Si tiene MFA habilitado
+        if (auth.mfa_enabled) {
+            return {
+                requiresMFA: true,
+                id_user: auth.id_user,
+                message: 'MFA requerido'
+            }
+        } else {
+
+            const token = await authToken(decodedUser);
+
+            return {
+                token,
+                id_user: auth.id_user,
+                message: "Autenticación exitosa"
+            }
+        }
+
+    }
+
 
     /**
      * Autenticar usuario y generar token JWT
@@ -135,6 +193,8 @@ export class AuthService {
         if (decoded.jti) {
             await revokeToken(decoded.jti);
         }
+
+
 
         return {
             message: "Logout exitoso"

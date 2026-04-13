@@ -8,6 +8,32 @@ import { PRODUCTION } from "@/src/enviroment";
 
 export class AuthController {
 
+
+    static async googleAuth(req: Request, res: Response) {
+        try {
+
+            const { credential } = req.body;
+
+            if (!credential) return res.status(400).json({ message: "Credenciales requeridas" });
+
+            const result = await AuthService.googleAuth(credential);
+
+            res.cookie('access_token', result.token, {
+                httpOnly: true,
+                secure: PRODUCTION === 'true' ? true : false,
+                sameSite: 'strict',
+                maxAge: 60 * 60 * 1000, // 1 hora
+            })
+
+            return res.status(200).json({ message: result.message, id_user: result.id_user });
+
+        } catch (error) {
+            errorCatch(res, error);
+        }
+
+    }
+
+
     /**
      * Autenticar usuario y generar token JWT
      * @param req 

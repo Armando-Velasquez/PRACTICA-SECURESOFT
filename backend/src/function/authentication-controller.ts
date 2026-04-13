@@ -51,10 +51,20 @@ export async function authService(email: string, password: string, isAdmin: bool
 
     const token = await authToken(decodedUser);
 
-    return {
-        token,
-        id_user: auth.id_user,
-        message: "Autenticación exitosa"
+    // Si tiene MFA habilitado
+    if (auth.mfa_enabled) {
+        return {
+            requiresMFA: true,
+            id_user: auth.id_user,
+            message: 'MFA requerido'
+        }
+    } else {
+        return {
+            token,
+            id_user: auth.id_user,
+            message: "Autenticación exitosa"
+        }
     }
+
 
 }

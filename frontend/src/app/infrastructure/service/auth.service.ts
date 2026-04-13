@@ -22,6 +22,11 @@ export class AuthService {
     private readonly timeSessionService: TimeSessionService
   ) { }
 
+  // Google
+  googleLogin(credential: any): Observable<any> {
+    return this.http.post<any>(`${this.url}/google`, { credential });
+  }
+
   // Login User
   authenticate(formData: { email: string, password: string }): Observable<any> {
     return this.http.post<any>(`${this.url}/login`, formData);

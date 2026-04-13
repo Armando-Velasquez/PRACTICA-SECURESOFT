@@ -11,6 +11,8 @@ export function defineAuthModel(sequelize: Sequelize) {
         public email_auth!: string;
         public password_auth!: string;
         public salt_auth!: string;
+        public mfa_secret!: string | null;
+        public mfa_enabled!: boolean;
         public id_user!: number;
 
         public user?: UserModel;
@@ -38,6 +40,14 @@ export function defineAuthModel(sequelize: Sequelize) {
         },
         salt_auth: {
             type: DataTypes.TEXT,
+            allowNull: false,
+        },
+        mfa_secret: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
+        mfa_enabled: {
+            type: DataTypes.BOOLEAN,
             allowNull: false,
         },
         id_user: {
