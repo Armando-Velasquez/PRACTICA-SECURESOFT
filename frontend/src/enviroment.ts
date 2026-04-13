@@ -1,4 +1,4 @@
-const isProduction = false;
+const isProduction = true;
 const baseUrl = isProduction ? 'https://securesoft-rest.armandovelasquez.com' : 'http://localhost:3000';
 
 // https://yourdomain.com
