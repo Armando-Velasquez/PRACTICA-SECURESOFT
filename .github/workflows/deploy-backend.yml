@@ -137,23 +137,23 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
 
-          echo "PORT=${{ vars.PORT }}" >> /var/www/SECURESOFT/backend/dist/.env
-          echo "TIMEZONE=${{ vars.TIMEZONE }}" > /var/www/SECURESOFT/backend/dist/.env
-          echo "TIME_SESSION=${{ vars.TIME_SESSION }}" >> /var/www/SECURESOFT/backend/dist/.env
-          echo "PRODUCTION=${{ vars.PRODUCTION }}" >> /var/www/SECURESOFT/backend/dist/.env
+          echo "PORT=${{ vars.PORT }}" >> /var/www/SECURESOFT/backend/.env
+          echo "TIMEZONE=${{ vars.TIMEZONE }}" > /var/www/SECURESOFT/backend/.env
+          echo "TIME_SESSION=${{ vars.TIME_SESSION }}" >> /var/www/SECURESOFT/backend/.env
+          echo "PRODUCTION=${{ vars.PRODUCTION }}" >> /var/www/SECURESOFT/backend/.env
 
-          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> /var/www/SECURESOFT/backend/dist/.env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> /var/www/SECURESOFT/backend/.env
 
-          echo "BD_HOST=${{ vars.BD_HOST }}" >> /var/www/SECURESOFT/backend/dist/.env
-          echo "BD_USER=${{ secrets.BD_USER }}" >> /var/www/SECURESOFT/backend/dist/.env
-          echo "BD_PASSWORD=${{ secrets.BD_PASSWORD }}" >> /var/www/SECURESOFT/backend/dist/.env
-          echo "DB_NAME=${{ vars.DB_NAME }}" >> /var/www/SECURESOFT/backend/dist/.env
+          echo "BD_HOST=${{ vars.BD_HOST }}" >> /var/www/SECURESOFT/backend/.env
+          echo "BD_USER=${{ secrets.BD_USER }}" >> /var/www/SECURESOFT/backend/.env
+          echo "BD_PASSWORD=${{ secrets.BD_PASSWORD }}" >> /var/www/SECURESOFT/backend/.env
+          echo "DB_NAME=${{ vars.DB_NAME }}" >> /var/www/SECURESOFT/backend/.env
 
-          echo "BDO_DIALECT=${{ vars.BDO_DIALECT }}" >> /var/www/SECURESOFT/backend/dist/.env
-          echo "BDO_HOST=${{ vars.BDO_HOST }}" >> /var/www/SECURESOFT/backend/dist/.env
-          echo "BDO_USER=${{ secrets.BDO_USER }}" >> /var/www/SECURESOFT/backend/dist/.env
-          echo "BDO_PASSWORD=${{ secrets.BDO_PASSWORD }}" >> /var/www/SECURESOFT/backend/dist/.env
-          echo "DBO_NAME=${{ vars.DBO_NAME }}" >> /var/www/SECURESOFT/backend/dist/.env
+          echo "BDO_DIALECT=${{ vars.BDO_DIALECT }}" >> /var/www/SECURESOFT/backend/.env
+          echo "BDO_HOST=${{ vars.BDO_HOST }}" >> /var/www/SECURESOFT/backend/.env
+          echo "BDO_USER=${{ secrets.BDO_USER }}" >> /var/www/SECURESOFT/backend/.env
+          echo "BDO_PASSWORD=${{ secrets.BDO_PASSWORD }}" >> /var/www/SECURESOFT/backend/.env
+          echo "DBO_NAME=${{ vars.DBO_NAME }}" >> /var/www/SECURESOFT/backend/.env
 
           EOF
 

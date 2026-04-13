@@ -21,7 +21,7 @@ export const limiter = (minutos: number, max: number) => rateLimit({
     message: 'Demasiadas solicitudes desde esta IP, por favor inténtalo de nuevo después de 15 minutos.'
 })
 
-export class Server {
+class Server {
     app: Application;
     port: string | number;
     server: http.Server | https.Server;
@@ -56,7 +56,7 @@ export class Server {
         }));
 
         // Conexion de base de datos
-        connectDB();
+        // connectDB();
 
         // Conexion a base de datos con Sequelize
         connection();
@@ -82,3 +82,6 @@ export class Server {
     }
 
 }
+
+
+export default Server;
